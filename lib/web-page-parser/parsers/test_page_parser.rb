@@ -1,12 +1,12 @@
 class TestPageParserFactory < WebPageParser::ParserFactory
   @url_regexp = Regexp.new("www.example.com")
 
-  def self.can_parse?(url, page = nil)
-    @url_regexp.match(url)
+  def self.can_parse?(options = {})
+    @url_regexp.match(options[:url])
   end
 
-  def self.create(url, page = nil)
-    TestPageParser.new(:url => url, :page => page)
+  def self.create(options = {})
+    TestPageParser.new(options)
   end
 end
 

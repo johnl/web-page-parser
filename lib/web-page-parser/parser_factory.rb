@@ -1,11 +1,15 @@
 module WebPageParser
   class ParserFactory
 
-    def can_parse?(url, page = nil)
+    # return true if the Parser can handle the given page. options
+    # hash must have a :url key
+    def can_parse?(options = {})
       false
     end
 
-    def create(url, page = nil)
+    # Allocate a new parser. options hash is passed to new method of
+    # parser class.
+    def create(options = {})
       nil
     end
 
@@ -19,10 +23,11 @@ module WebPageParser
       @@factories
     end
 
-    # Return a PageParser than can parse the given page
-    def self.parser_for(url, page = nil)
+    # Return a PageParser than can parse the given page. options hash
+    # must have a :url key
+    def self.parser_for(options = {})
       @@factories.each do |factory|
-        return factory.create(url, page) if factory.can_parse?(url, page)
+        return factory.create(options) if factory.can_parse?(options)
       end
       nil
     end
@@ -35,6 +40,7 @@ module WebPageParser
       end
     end
 
+    # Keep track of any newly defined factories
     def self.inherited(factory)
       self.add_factory(factory)
     end
