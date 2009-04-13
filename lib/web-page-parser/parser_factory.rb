@@ -1,5 +1,5 @@
 module WebPageParser
-  class BaseFactory
+  class ParserFactory
 
     def type
       ""
@@ -26,8 +26,13 @@ module WebPageParser
         require "#{dirname}/#{fn}"
       end
     end
+
+    def self.inherited(factory)
+      self.add_factory(factory)
+    end
+
   end
 
-  BaseFactory.load(File.join(File.dirname(__FILE__), 'parsers'))
+  ParserFactory.load(File.join(File.dirname(__FILE__), 'parsers'))
 
 end
