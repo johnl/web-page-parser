@@ -1,29 +1,37 @@
 module WebPageParser
   class ParserFactory
 
-    def type
-      ""
+    def can_parse?(url, page = nil)
+      false
     end
-    
-    def create
+
+    def create(url, page = nil)
       nil
     end
 
     @@factories = []
 
     def self.add_factory(f)
-      @@factories << f
+      @@factories << f unless @@factories.include? f
     end
 
     def self.factories
       @@factories
     end
 
+    # Return a PageParser than can parse the given page
+    def self.parser_for(url, page = nil)
+      @@factories.each do |factory|
+        return factory.create(url, page) if factory.can_parse?(url, page)
+      end
+      nil
+    end
+
     # Load all the plugins in the given directory
     def self.load(dirname)
-      Dir.open(dirname) do |fn|
-        next unless fn =~ /\.rb$/
-        require "#{dirname}/#{fn}"
+      Dir.open(dirname).each do |fn|
+        next unless fn =~ /page_parser\.rb$/
+        require File.join(dirname, fn)
       end
     end
 

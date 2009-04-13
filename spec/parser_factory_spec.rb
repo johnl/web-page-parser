@@ -3,9 +3,12 @@ require 'web-page-parser'
 include WebPageParser
 
 describe ParserFactory do
-  it "should know about its subclasses" do
-    ParserFactory.factories.size.should == 0
-    class TestParserFactory < ParserFactory ; end
-    ParserFactory.factories.size.should == 1
+
+  it "should load parsers in the parsers directory" do
+    ParserFactory.factories.first.to_s.should == "TestPageParserFactory"
+  end
+
+  it "should provide the right PageParser for the given url" do
+    ParserFactory.parser_for("http://www.example.com").should be_a_kind_of TestPageParser
   end
 end
