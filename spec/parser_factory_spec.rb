@@ -11,4 +11,8 @@ describe ParserFactory do
   it "should provide the right PageParser for the given url" do
     ParserFactory.parser_for("http://www.example.com").should be_a_kind_of TestPageParser
   end
+
+  it "should return nil if no PageParser can be found for the given url" do
+    ParserFactory.parser_for("http://www.nowhere.nodomain").should be_nil
+  end
 end
