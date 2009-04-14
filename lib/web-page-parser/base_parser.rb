@@ -1,6 +1,7 @@
 
 module WebPageParser
   require 'digest'
+  require 'date'
 
   class BaseParser
     attr_reader :title, :date, :content
