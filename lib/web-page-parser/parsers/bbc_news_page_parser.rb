@@ -24,20 +24,53 @@ module WebPageParser
     class BbcNewsPageParserV1 < WebPageParser::BaseParser
       require 'cgi'
 
+      def self.find_title_in(page)
+        @title_regexp ||= ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
+        if matches = @title_regexp.match(page)
+          matches[1] 
+        end
+      end
+
+      def self.find_date_in(page)
+        @date_regexp ||= ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
+        if matches = @date_regexp.match(page)
+          matches[1]
+        end
+      end
+
+      def self.find_content_in(page)
+        @content_regexp_1 ||= ORegexp.new('S SF -->(.*?)<!-- E BO', 'm')
+        @content_regexp_2 ||= ORegexp.new('S BO -->(.*?)<!-- E BO', 'm')
+        matches = @content_regexp_1.match(page)
+        matches = @content_regexp_2.match(page) unless matches
+        if matches
+          matches[1]
+        end
+      end
+
+      def self.strip_tags_from!(content)
+        @strip_tags_regexp ||= ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
+        @strip_tags_regexp.gsub!(content, '')
+      end
+
+      def self.normalize_whitespace_in!(content)
+        @whitespace_regexp ||= ORegexp.new('\n|\r|\t|')
+        @whitespace_regexp.gsub!(content, '')
+      end
+
       def parse!
-        @title = $1 if @page =~ /<meta name="Headline" content="(.*)"/i
-        if @page =~ /<meta name="OriginalPublicationDate" content="(.*)"/i
+        @title = BbcNewsPageParserV1.find_title_in(@page)
+        if date = BbcNewsPageParserV1.find_date_in(@page)
           begin
             # OPD is in GMT/UTC, which DateTime seems to use by default
-            @date = DateTime.parse($1)
+            @date = DateTime.parse(date)
           rescue ArgumentError
             @date = Time.now.utc
           end
         end
-        if @page =~ /S SF -->(.*?)<!-- E BO/m or page_data =~ /S BO -->(.*?)<!-- E BO/m
-          @content = $1
-          @content.gsub!(/\n|\r|\t/, '')
-          @content.gsub!(/<\/?(div|img|tr|td|!--|table)[^>]*>/i, '')
+        if @content = BbcNewsPageParserV1.find_content_in(@page)
+          BbcNewsPageParserV1.normalize_whitespace_in!(@content)
+          BbcNewsPageParserV1.strip_tags_from!(@content)
           @content = @content.split(/<p>/i)
         end
       end

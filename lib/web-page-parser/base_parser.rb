@@ -2,8 +2,10 @@
 module WebPageParser
   require 'digest'
   require 'date'
+  require 'oniguruma'
 
   class BaseParser
+    include Oniguruma
     attr_reader :title, :date, :content
     attr_reader :url, :guid, :page
 
