@@ -26,57 +26,37 @@ module WebPageParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-      CONTENT_RE = ORegexp.new('S (SF|BO) -->(.*?)<!-- E BO', 'm')
+      CONTENT_RE = ORegexp.new('S (?:SF|BO) -->(.*?)<!-- E BO', 'm')
       STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
       WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
       PARA_RE = Regexp.new(/<p>/i)
 
-      def self.find_title_in(page)
-        if matches = TITLE_RE.match(page)
-          matches[1] 
-        end
-      end
-
-      def self.find_date_in(page)
-        if matches = DATE_RE.match(page)
-          matches[1]
-        end
-      end
-
-      def self.find_content_in(page)
-        matches = CONTENT_RE.match(page)
-        if matches
-          matches[2]
-        end
-      end
-
-      def self.strip_tags_from!(content)
-        STRIP_TAGS_RE.gsub!(content, '')
-      end
-
-      def self.normalize_whitespace_in!(content)
-        WHITESPACE_RE.gsub!(content, '')
-      end
-
-      def parse!
-        @title = BbcNewsPageParserV1.find_title_in(@page)
-        if date = BbcNewsPageParserV1.find_date_in(@page)
+      def date
+        return @date if @date
+        if super # use the inherited method to get the data from the page
           begin
             # OPD is in GMT/UTC, which DateTime seems to use by default
-            @date = DateTime.parse(date)
+            @date = DateTime.parse(@date)
           rescue ArgumentError
             @date = Time.now.utc
           end
         end
-        if @content = BbcNewsPageParserV1.find_content_in(@page)
-          BbcNewsPageParserV1.normalize_whitespace_in!(@content)
-          BbcNewsPageParserV1.strip_tags_from!(@content)
+      end
+
+      def content
+        return @content if @content
+        if super
+          @content = STRIP_TAGS_RE.gsub(@content, '')
+          @content = WHITESPACE_RE.gsub(@content, '')
           @content = @content.split(PARA_RE)
         end
       end
 
+      def parse!
+      end
+
       def hash
-        Digest::MD5.hexdigest(@content.join) if @content.respond_to?(:join)
+        Digest::MD5.hexdigest(content.join) if content.respond_to?(:join)
       end
 
       private
@@ -99,13 +79,6 @@ module WebPageParser
       STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
       WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
       PARA_RE = Regexp.new(/<p>/i)
-
-      def title
-        return @title if @title
-        if matches = TITLE_RE.match(page)
-          @title = matches[1].to_s.strip
-        end
-      end
 
     end
 end
