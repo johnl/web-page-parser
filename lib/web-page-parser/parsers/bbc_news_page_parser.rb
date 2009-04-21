@@ -24,38 +24,38 @@ module WebPageParser
     class BbcNewsPageParserV1 < WebPageParser::BaseParser
       require 'cgi'
 
+      TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
+      DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
+      CONTENT_RE = ORegexp.new('S (SF|BO) -->(.*?)<!-- E BO', 'm')
+      STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
+      WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
+      PARA_RE = Regexp.new(/<p>/i)
+
       def self.find_title_in(page)
-        @title_regexp ||= ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
-        if matches = @title_regexp.match(page)
+        if matches = TITLE_RE.match(page)
           matches[1] 
         end
       end
 
       def self.find_date_in(page)
-        @date_regexp ||= ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-        if matches = @date_regexp.match(page)
+        if matches = DATE_RE.match(page)
           matches[1]
         end
       end
 
       def self.find_content_in(page)
-        @content_regexp_1 ||= ORegexp.new('S SF -->(.*?)<!-- E BO', 'm')
-        @content_regexp_2 ||= ORegexp.new('S BO -->(.*?)<!-- E BO', 'm')
-        matches = @content_regexp_1.match(page)
-        matches = @content_regexp_2.match(page) unless matches
+        matches = CONTENT_RE.match(page)
         if matches
-          matches[1]
+          matches[2]
         end
       end
 
       def self.strip_tags_from!(content)
-        @strip_tags_regexp ||= ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
-        @strip_tags_regexp.gsub!(content, '')
+        STRIP_TAGS_RE.gsub!(content, '')
       end
 
       def self.normalize_whitespace_in!(content)
-        @whitespace_regexp ||= ORegexp.new('\n|\r|\t|')
-        @whitespace_regexp.gsub!(content, '')
+        WHITESPACE_RE.gsub!(content, '')
       end
 
       def parse!
@@ -71,7 +71,7 @@ module WebPageParser
         if @content = BbcNewsPageParserV1.find_content_in(@page)
           BbcNewsPageParserV1.normalize_whitespace_in!(@content)
           BbcNewsPageParserV1.strip_tags_from!(@content)
-          @content = @content.split(/<p>/i)
+          @content = @content.split(PARA_RE)
         end
       end
 
