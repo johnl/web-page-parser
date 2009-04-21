@@ -40,7 +40,6 @@ describe BbcNewsPageParserV2 do
       :valid_hash => ''
     }
     @pa = BbcNewsPageParserV2.new(@valid_options)
-    @pa.parse!
   end
 
   it "should parse the title" do
@@ -57,7 +56,6 @@ describe BbcNewsPageParserV1 do
       :valid_hash => 'aaf7ed1219eb69c3126ea5d0774fbe7d'
     }
     @pa = BbcNewsPageParserV1.new(@valid_options)
-    @pa.parse!
   end
 
   it "should parse the title" do
@@ -75,4 +73,17 @@ describe BbcNewsPageParserV1 do
     @pa.content.size.should == 5
     @pa.hash.should == @valid_options[:valid_hash]
   end
+
+  it "should convert apostrophe and pound sign html entities in content" do
+    @pa = BbcNewsPageParserV1.new :page => 'S SF -->John&apos;s code sucks &amp; blows<!-- E BO'
+    @pa.content.to_s.should match Regexp.new("John's")
+    @pa.content.to_s.should match /sucks & blows/
+  end
+
+  it "should convert apostrophe and pound sign html entities in page titles" do
+    @pa = BbcNewsPageParserV1.new :page => '<meta name="Headline" content="John&apos;s code sucks &amp; blows!"/>'
+    @pa.title.should match Regexp.new("John's")
+    @pa.title.should match /sucks & blows/
+  end
+
 end

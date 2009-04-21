@@ -40,10 +40,6 @@ module WebPageParser
       end
     end
 
-    def parse!
-      nil
-    end
-
     # Return a hash representing the content of this web page
     def hash
       digest = Digest::MD5.new

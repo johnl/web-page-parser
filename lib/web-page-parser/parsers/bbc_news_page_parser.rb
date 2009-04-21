@@ -31,6 +31,13 @@ module WebPageParser
       WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
       PARA_RE = Regexp.new(/<p>/i)
 
+      def title
+        return @title if @title
+        if super
+          @title = unhtml(@title)
+        end
+      end
+
       def date
         return @date if @date
         if super # use the inherited method to get the data from the page
@@ -48,11 +55,9 @@ module WebPageParser
         if super
           @content = STRIP_TAGS_RE.gsub(@content, '')
           @content = WHITESPACE_RE.gsub(@content, '')
+          @content = unhtml(@content)
           @content = @content.split(PARA_RE)
         end
-      end
-
-      def parse!
       end
 
       def hash
