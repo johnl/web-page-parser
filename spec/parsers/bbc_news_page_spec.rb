@@ -32,12 +32,29 @@ describe BbcNewsPageParserFactory do
   end
 end
 
+describe BbcNewsPageParserV2 do
+  before do
+    @valid_options = { 
+      :url => 'http://news.bbc.co.uk/1/hi/world/middle_east/8011268.stm',
+      :page => File.read("spec/fixtures/bbc_news/8011268.stm.html"),
+      :valid_hash => ''
+    }
+    @pa = BbcNewsPageParserV2.new(@valid_options)
+    @pa.parse!
+  end
+
+  it "should parse the title" do
+    @pa.title.should == "Obama invites Middle East heads"
+  end
+
+end
+
 describe BbcNewsPageParserV1 do
   before do
     @valid_options = { 
       :url => 'http://news.bbc.co.uk/1/hi/england/bradford/6072486.stm',
       :page => File.read("spec/fixtures/bbc_news/6072486.stm.html"),
-      :valid_hash => ''
+      :valid_hash => 'aaf7ed1219eb69c3126ea5d0774fbe7d'
     }
     @pa = BbcNewsPageParserV1.new(@valid_options)
     @pa.parse!
@@ -56,6 +73,6 @@ describe BbcNewsPageParserV1 do
     @pa.content.first.should == "<B>The son-in-law of a 73-year-old Castleford widow has been charged with her murder.</B>"
     @pa.content.last.should == 'He denied the charges against him through his solicitor and is due to appear at Leeds Crown Court on Friday.'
     @pa.content.size.should == 5
-    @pa.hash.should == "aaf7ed1219eb69c3126ea5d0774fbe7d"
+    @pa.hash.should == @valid_options[:valid_hash]
   end
 end

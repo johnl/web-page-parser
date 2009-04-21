@@ -89,4 +89,23 @@ module WebPageParser
       end
 
     end
+
+    # BbcNewsPageParserV2 parses BBC News web pages
+    class BbcNewsPageParserV2 < WebPageParser::BaseParser
+
+      TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
+      DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
+      CONTENT_RE = ORegexp.new('S (SF|BO) -->(.*?)<!-- E BO', 'm')
+      STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
+      WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
+      PARA_RE = Regexp.new(/<p>/i)
+
+      def title
+        return @title if @title
+        if matches = TITLE_RE.match(page)
+          @title = matches[1].to_s.strip
+        end
+      end
+
+    end
 end
