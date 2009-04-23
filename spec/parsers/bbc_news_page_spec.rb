@@ -46,6 +46,13 @@ describe BbcNewsPageParserV2 do
     @pa.title.should == "Obama invites Middle East heads"
   end
 
+  it "should parse the date in UTC" do
+    # 2009/04/21 19:50:44
+    @pa.date.should == DateTime.parse("Apr 21 19:50:44 +0000 2009")
+    @pa.date.zone.should == '+00:00'
+  end
+  
+
 end
 
 describe BbcNewsPageParserV1 do

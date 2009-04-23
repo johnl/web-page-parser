@@ -85,5 +85,17 @@ module WebPageParser
       WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
       PARA_RE = Regexp.new(/<p>/i)
 
+      def date
+        return @date if @date
+        if super # use the inherited method to get the data from the page
+          begin
+            # OPD is in GMT/UTC, which DateTime seems to use by default
+            @date = DateTime.parse(@date)
+          rescue ArgumentError
+            @date = Time.now.utc
+          end
+        end
+      end
+
     end
 end
