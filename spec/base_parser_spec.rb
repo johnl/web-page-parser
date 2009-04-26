@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 require 'web-page-parser'
 
@@ -41,5 +42,20 @@ describe WebPageParser::BaseParser do
       :valid_hash => 'cfcd208495d565ef66e7dff9f98764da'
     }
   end
+
+  it "should decode basic html entities" do
+    bp = WebPageParser::BaseParser.new
+    entities = { 
+      '&quot;' => '"',
+      '&apos;' => "'",
+      '&amp;' => "&",
+      '&pound;' => '£',
+      '&aacute;' => 'á'
+    }
+    entities.each do |e,v|
+      bp.decode_entities(e).should == v
+    end
+  end
+
 
 end
