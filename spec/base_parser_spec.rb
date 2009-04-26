@@ -11,7 +11,6 @@ share_as :AllPageParsers do
   context "when hashing the content" do
     before :each do
       @wpp = WebPageParser::BaseParser.new(@valid_options)
-      @wpp.hash.should == @valid_options[:valid_hash]
       @hash = @wpp.hash
     end
 

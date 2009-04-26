@@ -28,7 +28,7 @@ module WebPageParser
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
       CONTENT_RE = ORegexp.new('S (?:SF|BO) -->(.*?)<!-- E BO', 'm')
       STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
-      WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
+      WHITESPACE_RE = ORegexp.new('\t|')
       PARA_RE = Regexp.new(/<p>/i)
 
       def title
@@ -80,10 +80,12 @@ module WebPageParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-      CONTENT_RE = ORegexp.new('S (SF|BO) -->(.*?)<!-- E BO', 'm')
-      STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
-      WHITESPACE_RE = ORegexp.new('\n|\r|\t|')
-      PARA_RE = Regexp.new(/<p>/i)
+      CONTENT_RE = ORegexp.new('S SF -->(.*?)<!-- E BO', 'm')
+      STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object)[^>]*>.*</\1>', 'i')
+      STRIP_TAGS_RE = ORegexp.new('</?(b|div|img|tr|td|br|font|span)[^>]*>','i')
+      STRIP_COMMENTS_RE = ORegexp.new('<!--.*?-->')
+      WHITESPACE_RE = ORegexp.new('[\t ]+')
+      PARA_RE = Regexp.new('</?p[^>]*>')
 
       def date
         return @date if @date
@@ -94,6 +96,19 @@ module WebPageParser
           rescue ArgumentError
             @date = Time.now.utc
           end
+        end
+      end
+
+      def content
+        return @content if @content
+        if super
+          @content = STRIP_COMMENTS_RE.gsub(@content, '')
+          @content = STRIP_BLOCKS_RE.gsub(@content, '')
+          @content = STRIP_TAGS_RE.gsub(@content, '')
+          @content = WHITESPACE_RE.gsub(@content, ' ')
+          @content = @content.split(PARA_RE)
+          @content.collect! { |p| p.strip }
+          @content.delete_if { |p| p == '' or p.nil? }
         end
       end
 

@@ -1,4 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__), '../../lib')
+require 'spec/base_parser_spec'
 require 'web-page-parser'
 include WebPageParser
 
@@ -33,11 +34,12 @@ describe BbcNewsPageParserFactory do
 end
 
 describe BbcNewsPageParserV2 do
+  it_should_behave_like AllPageParsers
   before do
     @valid_options = { 
       :url => 'http://news.bbc.co.uk/1/hi/world/middle_east/8011268.stm',
       :page => File.read("spec/fixtures/bbc_news/8011268.stm.html"),
-      :valid_hash => ''
+      :valid_hash => 'd62e4362bf640b55363e920889eec7a8'
     }
     @pa = BbcNewsPageParserV2.new(@valid_options)
   end
@@ -52,6 +54,15 @@ describe BbcNewsPageParserV2 do
     @pa.date.zone.should == '+00:00'
   end
   
+  it "should parse the content" do
+    @pa.content[0].should == "US officials say the leaders of Israel, Egypt and the Palestinians have been invited for talks in Washington in a new push for Middle East peace."
+    @pa.content.last.should == "The US supports a two-state solution, with Israel existing peacefully alongside a Palestinian state."
+    @pa.content.size.should == 15
+  end
+
+  it "should calculate a valid hash of the content" do
+    @pa.hash.should == @valid_options[:valid_hash]
+  end
 
 end
 

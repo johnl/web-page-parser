@@ -12,6 +12,7 @@ module WebPageParser
     TITLE_RE = //
     DATE_RE = //
     CONTENT_RE = //
+    KILL_CHARS_RE = ORegexp.new('[\n\r]+')
 
     def initialize(options = { })
       @url = options[:url]
@@ -36,15 +37,16 @@ module WebPageParser
       return @content if @content
       matches = self.class.const_get(:CONTENT_RE).match(page)
       if matches
-        @content = matches[1]
+        @content = self.class.const_get(:KILL_CHARS_RE).gsub(matches[1].to_s, '')
       end
+      @content
     end
 
     # Return a hash representing the content of this web page
     def hash
       digest = Digest::MD5.new
       digest << title.to_s
-      digest << date.to_i.to_s
+      digest << (date.respond_to?(:to_i) ? date.to_i.to_s : date.to_s)
       digest << content.to_s
       digest.to_s
     end
