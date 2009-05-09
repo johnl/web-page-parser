@@ -19,6 +19,7 @@ module WebPageParser
     def initialize(options = { })
       @url = options[:url]
       @page = options[:page]
+      @content = []
     end
 
     def title
@@ -36,7 +37,7 @@ module WebPageParser
     end
 
     def content
-      return @content if @content
+      return @content unless @content.empty?
       matches = self.class.const_get(:CONTENT_RE).match(page)
       if matches
         @content = self.class.const_get(:KILL_CHARS_RE).gsub(matches[1].to_s, '')

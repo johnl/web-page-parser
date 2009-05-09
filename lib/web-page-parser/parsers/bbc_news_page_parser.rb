@@ -42,7 +42,7 @@ module WebPageParser
       end
 
       def content
-        return @content if @content
+        return @content unless @content.empty?
         if super
           @content = STRIP_TAGS_RE.gsub(@content, '')
           @content = WHITESPACE_RE.gsub(@content, '')
@@ -52,7 +52,7 @@ module WebPageParser
       end
 
       def hash
-        Digest::MD5.hexdigest(content.join) if content.respond_to?(:join)
+        Digest::MD5.hexdigest(content.to_s)
       end
 
     end
@@ -83,7 +83,7 @@ module WebPageParser
       end
 
       def content
-        return @content if @content
+        return @content unless @content.empty?
         if super
           @content = STRIP_CAPTIONS_RE.gsub(@content, '')
           @content = STRIP_COMMENTS_RE.gsub(@content, '')

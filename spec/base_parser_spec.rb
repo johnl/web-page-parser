@@ -8,6 +8,12 @@ share_as :AllPageParsers do
     wpp.url.should == @valid_options[:url]
     wpp.page.should == @valid_options[:page]
   end
+  
+  it "should return an empty array when there is no content available" do
+    content = WebPageParser::BaseParser.new.content
+    content.should be_a_kind_of Array
+    content.empty?.should be_true
+  end
 
   context "when hashing the content" do
     before :each do
