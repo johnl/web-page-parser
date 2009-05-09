@@ -62,7 +62,7 @@ module WebPageParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-      CONTENT_RE = ORegexp.new('S (?:BO) -->(.*?)<!-- E BO', 'm')
+      CONTENT_RE = ORegexp.new('S BO -->(.*?)<!-- E BO', 'm')
       STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object)[^>]*>.*</\1>', 'i')
       STRIP_TAGS_RE = ORegexp.new('</?(b|div|img|tr|td|br|font|span)[^>]*>','i')
       STRIP_COMMENTS_RE = ORegexp.new('<!--.*?-->')
@@ -90,11 +90,24 @@ module WebPageParser
           @content = STRIP_BLOCKS_RE.gsub(@content, '')
           @content = STRIP_TAGS_RE.gsub(@content, '')
           @content = WHITESPACE_RE.gsub(@content, ' ')
+          @content = to_utf8(@content)
           @content = @content.split(PARA_RE)
           @content.collect! { |p| p.strip }
           @content.delete_if { |p| p == '' or p.nil? }
         end
       end
-
+      
+      def title
+        return @title if @title
+        if super
+          @title = IV_8859_1.iconv(@title)
+        end
+      end
+ 
+      private
+      
+      def to_utf8(s)
+        IV_8859_1.iconv(s)
+      end
     end
 end

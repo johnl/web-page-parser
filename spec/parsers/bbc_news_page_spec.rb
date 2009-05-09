@@ -52,6 +52,17 @@ describe BbcNewsPageParserV2 do
   it "should parse the title" do
     @pa.title.should == "Obama invites Middle East heads"
   end
+  
+  it "should convert iso-8859-1 in the title to utf8" do
+    page = BbcNewsPageParserV2.new(:page => '<meta name="Headline" content="'+"\243"+'100K mortgage claim by Woodward"')
+    page.title.should == "£100K mortgage claim by Woodward"
+  end
+  
+  it "should convert iso-8859-1 in the content to utf8" do
+    page = BbcNewsPageParserV2.new(:page => "S BO -->\243100K mortgage claim by Woodward<!-- E BO")
+    page.content.first.should == "£100K mortgage claim by Woodward"
+  end
+  
 
   it "should parse the date in UTC" do
     # 2009/04/21 19:50:44

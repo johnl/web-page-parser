@@ -4,11 +4,15 @@ module WebPageParser
   require 'date'
   require 'oniguruma'
   require 'htmlentities'
+  require 'iconv'
 
   class BaseParser
     include Oniguruma
+
     attr_reader :title, :date, :content
     attr_reader :url, :guid, :page
+    
+    IV_8859_1 = Iconv.new("utf8", "iso-8859-1")
 
     TITLE_RE = //
     DATE_RE = //
@@ -59,7 +63,7 @@ module WebPageParser
     def decode_entities(s)
       HTML_ENTITIES_DECODER.decode(s)
     end
-
+    
   end
 
 
