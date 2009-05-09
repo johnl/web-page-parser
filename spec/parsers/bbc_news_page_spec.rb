@@ -31,6 +31,10 @@ describe BbcNewsPageParserFactory do
       BbcNewsPageParserFactory.can_parse?(:url => url).should be_nil
     end
   end
+  
+  it "should ignore 'in pictures' articles" do
+    BbcNewsPageParserFactory.can_parse?(:url => 'http://news.bbc.co.uk/1/hi/in_pictures/8039882.stm').should be_nil
+  end
 end
 
 describe BbcNewsPageParserV2 do
@@ -66,6 +70,13 @@ describe BbcNewsPageParserV2 do
 
   it "should calculate a valid hash of the content" do
     @pa.hash.should == @valid_options[:valid_hash]
+  end
+  
+  it "should parse 'from our own correspondent' pages" do
+    page = BbcNewsPageParserV2.new(:url => "http://news.bbc.co.uk/1/hi/programmes/from_our_own_correspondent/8029015.stm",
+                                   :page => File.read("spec/fixtures/bbc_news/8029015.stm.html"))
+    page.title.should == "Cairo's terrifying traffic chaos"
+    page.content.first.should == "Christian Fraser discovers that a brush with death on Cairo's congested roads leaves no appetite for life in the fast lane."
   end
 
 end

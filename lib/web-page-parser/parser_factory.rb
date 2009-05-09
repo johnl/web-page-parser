@@ -1,5 +1,7 @@
 module WebPageParser
+  require 'oniguruma'
   class ParserFactory
+    include Oniguruma
 
     # return true if the Parser can handle the given page. options
     # hash must have a :url key

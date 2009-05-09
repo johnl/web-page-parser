@@ -2,19 +2,17 @@
 module WebPageParser
 
     class BbcNewsPageParserFactory < WebPageParser::ParserFactory
-      @url_regexp = Regexp.new("news\.bbc\.co\.uk/.*/[0-9]+\.stm")
+      URL_RE = ORegexp.new("news\.bbc\.co\.uk/.*/[0-9]+\.stm")
+      INVALID_URL_RE = ORegexp.new("in_pictures")
 
       def self.can_parse?(options)
-        @url_regexp.match(options[:url])
+        return nil if INVALID_URL_RE.match(options[:url])
+        URL_RE.match(options[:url])
       end
 
       def self.create(options = {})
-        BbcNewsPageParser.new
+        BbcNewsPageParserV2.new(options)
       end
-    end
-
-    class BbcNewsPageParser < WebPageParser::BaseParser
-
     end
 
     # BbcNewsPageParserV1 parses BBC News web pages exactly like the
@@ -64,10 +62,11 @@ module WebPageParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-      CONTENT_RE = ORegexp.new('S SF -->(.*?)<!-- E BO', 'm')
+      CONTENT_RE = ORegexp.new('S (?:BO) -->(.*?)<!-- E BO', 'm')
       STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object)[^>]*>.*</\1>', 'i')
       STRIP_TAGS_RE = ORegexp.new('</?(b|div|img|tr|td|br|font|span)[^>]*>','i')
       STRIP_COMMENTS_RE = ORegexp.new('<!--.*?-->')
+      STRIP_CAPTIONS_RE = ORegexp.new('<!-- caption .+<!-- END - caption -->')
       WHITESPACE_RE = ORegexp.new('[\t ]+')
       PARA_RE = Regexp.new('</?p[^>]*>')
 
@@ -86,6 +85,7 @@ module WebPageParser
       def content
         return @content if @content
         if super
+          @content = STRIP_CAPTIONS_RE.gsub(@content, '')
           @content = STRIP_COMMENTS_RE.gsub(@content, '')
           @content = STRIP_BLOCKS_RE.gsub(@content, '')
           @content = STRIP_TAGS_RE.gsub(@content, '')
