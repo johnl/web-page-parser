@@ -16,7 +16,8 @@ describe BbcNewsPageParserFactory do
                      "http://news.bbc.co.uk/2/hi/health/default.stm",
                      "http://news.bbc.co.uk/2/low/europe/default.stm",
                      "http://news.bbc.co.uk/2/hi/in_pictures/default.stm",
-                     "http://news.bbc.co.uk/sport"
+                     "http://news.bbc.co.uk/sport",
+                     "http://newsforums.bbc.co.uk/nol/thread.jspa?forumID=6422&edition=1&ttl=20090509133749"
                     ]
   end
 
