@@ -47,7 +47,7 @@ describe BbcNewsPageParserV2 do
     @valid_options = { 
       :url => 'http://news.bbc.co.uk/1/hi/world/middle_east/8011268.stm',
       :page => File.read("spec/fixtures/bbc_news/8011268.stm.html"),
-      :valid_hash => '2a1396df3af6ba4c27e9195a21c07e84'
+      :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
     }
     @pa = BbcNewsPageParserV2.new(@valid_options)
   end

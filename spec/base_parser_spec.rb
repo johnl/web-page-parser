@@ -26,9 +26,9 @@ share_as :AllPageParsers do
       @wpp.hash.should_not == @hash
     end
 
-    it "calculates a hash using the date" do
+    it "does not calculates a hash using the date" do
       @wpp.instance_eval("@date=Time.now")
-      @wpp.hash.should_not == @hash
+      @wpp.hash.should == @hash
     end
 
     it "calculates a hash using the content" do
