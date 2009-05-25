@@ -92,6 +92,13 @@ describe BbcNewsPageParserV2 do
     page.title.should == "Cairo's terrifying traffic chaos"
     page.content.first.should == "Christian Fraser discovers that a brush with death on Cairo's congested roads leaves no appetite for life in the fast lane."
   end
+  
+  it "should parse 'magazine' pages" do
+    page = BbcNewsPageParserV2.new(:url => "http://news.bbc.co.uk/1/hi/magazine/8063681.stm",
+                                   :page => File.read("spec/fixtures/bbc_news/8063681.stm.html"))
+    page.title.should == "My night with Parisien prostitutes"
+    page.content.first.should == "Wandering around the red light district of Paris as a teenager taught me all I need to know - about teenagers, not women, says Laurie Taylor in his weekly column."
+  end
 
 end
 

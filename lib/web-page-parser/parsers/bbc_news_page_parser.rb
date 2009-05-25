@@ -65,7 +65,7 @@ module WebPageParser
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
       CONTENT_RE = ORegexp.new('S BO -->(.*?)<!-- E BO', 'm')
-      STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object|form)[^>]*>.*</\1>', 'i')
+      STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object|form)[^>]*>.*?</\1>', 'i')
       STRIP_TAGS_RE = ORegexp.new('</?(b|div|img|tr|td|br|font|span)[^>]*>','i')
       STRIP_COMMENTS_RE = ORegexp.new('<!--.*?-->')
       STRIP_CAPTIONS_RE = ORegexp.new('<!-- caption .+<!-- END - caption -->')
