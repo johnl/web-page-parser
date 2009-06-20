@@ -26,14 +26,11 @@ module WebPageParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
-      CONTENT_RE = ORegexp.new('S (?:SF|BO) -->(.*?)<!-- E BO', 'm')
+      CONTENT_RE = ORegexp.new('S (?:SF) -->(.*?)<!-- E BO', 'm')
       STRIP_TAGS_RE = ORegexp.new('</?(div|img|tr|td|!--|table)[^>]*>','i')
       WHITESPACE_RE = ORegexp.new('\t|')
       PARA_RE = Regexp.new(/<p>/i)
       
-      # Old News Sniffer didn't do any encoding conversion
-      ICONV = nil
-
       def hash
         # Old News Sniffer only hashed the content, not the title
         Digest::MD5.hexdigest(content.to_s)
