@@ -1,7 +1,8 @@
 Gem::Specification.new do |s|
   s.name    = 'web-page-parser'
-  s.version = '1.0'
-  s.date    = '2009-05-08'
+  s.version = '0.10'
+  s.date    = '2009-06-20'
+  s.rubyforge_project = "web-page-parser"
   
   s.summary = "A parser for web pages"
   s.description = "A Ruby library to parse the content out of web pages, such as BBC News pages.  Used by the News Sniffer project."
