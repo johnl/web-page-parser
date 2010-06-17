@@ -41,6 +41,37 @@ describe BbcNewsPageParserFactory do
   end
 end
 
+describe BbcNewsPageParserV3 do
+  it_should_behave_like AllPageParsers
+  before do
+    @valid_options = { 
+      :url => 'http://news.bbc.co.uk/1/hi/england/10249066.stm',
+      :page => File.read("spec/fixtures/bbc_news/10249066.stm.html"),
+      :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
+    }
+    @pa = BbcNewsPageParserV3.new(@valid_options)
+  end
+
+  it "should parse the content" do
+    @pa.content[0].should == 'The family of gunman Derrick Bird say they have no idea why he carried out the "horrific" shootings in Cumbria.'
+    @pa.content.last.should == '"We appreciate what they are suffering at this time. We cannot offer any reason why Derrick took it upon himself to commit these crimes."'
+    @pa.content.size.should == 24    
+  end
+
+  it "should parse the content of an article with two captions" do
+    @pa = BbcNewsPageParserV3.new({ :url => "http://news.bbc.co.uk/1/hi/politics/10341015.stm", 
+                                    :page => File.read("spec/fixtures/bbc_news/10341015.stm.html"),
+                                    :valid_hash => 'unknown'
+                                  })
+    @pa.content[0].should == "The coalition government has cancelled 12 projects totalling £2bn agreed to by the previous Labour government since the start of 2010."
+    @pa.content[1].should == "These include an £80m loan to Sheffield Forgemasters and new programmes for the young unemployed, Chief Secretary to the Treasury Danny Alexander told MPs."
+    @pa.content[2].should == 'Mr Alexander said the cuts were necessary to tackle the budget deficit and would be done in a "fair" way.'
+  end
+    
+
+  
+end
+
 describe BbcNewsPageParserV2 do
   it_should_behave_like AllPageParsers
   before do
@@ -140,5 +171,5 @@ describe BbcNewsPageParserV1 do
     @pa.title.should match Regexp.new("John's")
     @pa.title.should match /sucks & blows/
   end
-
+  
 end

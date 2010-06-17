@@ -14,7 +14,7 @@ module WebPageParser
       end
 
       def self.create(options = {})
-        BbcNewsPageParserV2.new(options)
+        BbcNewsPageParserV3.new(options)
       end
     end
 
@@ -65,9 +65,9 @@ module WebPageParser
       STRIP_BLOCKS_RE = ORegexp.new('<(table|noscript|script|object|form)[^>]*>.*?</\1>', 'i')
       STRIP_TAGS_RE = ORegexp.new('</?(b|div|img|tr|td|br|font|span)[^>]*>','i')
       STRIP_COMMENTS_RE = ORegexp.new('<!--.*?-->')
-      STRIP_CAPTIONS_RE = ORegexp.new('<!-- caption .+<!-- END - caption -->')
+      STRIP_CAPTIONS_RE = ORegexp.new('<!-- caption .+?<!-- END - caption -->')
       WHITESPACE_RE = ORegexp.new('[\t ]+')
-      PARA_RE = Regexp.new('</?p[^>]*>')
+      PARA_RE = Regexp.new('</?p[^>]*>', Regexp::IGNORECASE)
       
       private
       
@@ -90,4 +90,18 @@ module WebPageParser
       end
 
     end
+
+    class BbcNewsPageParserV3 < BbcNewsPageParserV2
+      CONTENT_RE = ORegexp.new('<div id="story-body">(.*?)<div class="bookmark-list">', 'm')
+      STRIP_FEATURES_RE = ORegexp.new('<div class="story-feature">(.*?)</div>', 'm')
+      STRIP_MARKET_DATA_WIDGET_RE = ORegexp.new('<\!\-\- S MD_WIDGET.*? E MD_WIDGET \-\->')
+      ICONV = nil # BBC news is now in utf8
+      
+      def content_processor
+        @content = STRIP_FEATURES_RE.gsub(@content, '')
+        @content = STRIP_MARKET_DATA_WIDGET_RE.gsub(@content, '')
+        super
+      end
+    end
+    
 end

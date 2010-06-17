@@ -120,7 +120,7 @@ module WebPageParser
 
     # Convert the encoding of the given text if necessary
     def iconv(s)
-      if class_const(:ICONV)
+      if class_const(:ICONV) and ICONV
         class_const(:ICONV).iconv(s)
       else
         s        

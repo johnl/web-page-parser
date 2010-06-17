@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = 'web-page-parser'
-  s.version = '0.10'
-  s.date    = '2009-06-20'
+  s.version = '0.20'
+  s.date    = '2010-06-06'
   s.rubyforge_project = "web-page-parser"
   
   s.summary = "A parser for web pages"
