@@ -14,7 +14,7 @@ module WebPageParser
       end
 
       def self.create(options = {})
-        BbcNewsPageParserV3.new(options)
+        BbcNewsPageParserV4.new(options)
       end
     end
 
