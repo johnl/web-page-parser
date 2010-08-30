@@ -10,17 +10,24 @@ describe BbcNewsPageParserFactory do
                    "http://news.bbc.co.uk/1/hi/northern_ireland/7996478.stm",
                    "http://news.bbc.co.uk/1/hi/uk/7995652.stm",
                    "http://news.bbc.co.uk/1/hi/england/derbyshire/7996494.stm",
-                   "http://news.bbc.co.uk/2/low/uk_news/england/devon/7996447.stm"
+                   "http://news.bbc.co.uk/2/low/uk_news/england/devon/7996447.stm",
+                   "http://www.bbc.co.uk/news/business-11125504",
+                   "http://www.bbc.co.uk/news/10604897"
                   ]
     @invalid_urls = [
                      "http://news.bbc.co.uk/2/hi/health/default.stm",
                      "http://news.bbc.co.uk/2/low/europe/default.stm",
                      "http://news.bbc.co.uk/2/hi/in_pictures/default.stm",
                      "http://news.bbc.co.uk/sport",
+                     "http://news.bbc.co.uk/sport1/hi/tennis/8951357.stm",
                      "http://newsforums.bbc.co.uk/nol/thread.jspa?forumID=6422&edition=1&ttl=20090509133749",
                      "http://www.bbc.co.uk/blogs/nickrobinson/",
                      "http://news.bbc.co.uk/hi/english/static/in_depth/health/2000/heart_disease/default.stm",
-                     "http://news.bbc.co.uk/1/shared/spl/hi/pop_ups/08/middle_east_views_on_netanyahu0s_us_visit/html/1.stm"
+                     "http://news.bbc.co.uk/1/shared/spl/hi/pop_ups/08/middle_east_views_on_netanyahu0s_us_visit/html/1.stm",
+                     "http://www.bbc.co.uk/blogs/theeditors/",
+                     "http://www.bbc.co.uk/news/have_your_say/",
+                     "http://news.bbc.co.uk/1/hi/magazine/default.stm",
+                     "http://news.bbc.co.uk/1/hi/in_pictures/default.stm"
                     ]
   end
 
@@ -40,6 +47,30 @@ describe BbcNewsPageParserFactory do
     BbcNewsPageParserFactory.can_parse?(:url => 'http://news.bbc.co.uk/1/hi/in_pictures/8039882.stm').should be_nil
   end
 end
+
+describe BbcNewsPageParserV4 do
+  it_should_behave_like AllPageParsers
+  before do
+    @valid_options = { 
+      :url => 'http://www.bbc.co.uk/news/business-11125504',
+      :page => File.read("spec/fixtures/bbc_news/11125504.html"),
+      :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
+    }
+    @pa = BbcNewsPageParserV4.new(@valid_options)
+  end
+
+  it "should parse the title" do
+    @pa.title.should == "UK economy 'to pick up in near term'"
+  end
+
+  it "should parse the content" do
+    @pa.content[0].should == "The British Chambers of Commerce (BCC) has upgraded its forecast for the UK's short term economic prospects, but said interest rates must be kept low to aid recovery."
+    @pa.content.last.should == '"Failure to get this right poses the biggest risk to recovery."'
+    @pa.content.size.should == 18
+  end
+
+end
+
 
 describe BbcNewsPageParserV3 do
   it_should_behave_like AllPageParsers

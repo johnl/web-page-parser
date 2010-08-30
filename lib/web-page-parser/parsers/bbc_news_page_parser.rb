@@ -2,8 +2,8 @@
 module WebPageParser
 
     class BbcNewsPageParserFactory < WebPageParser::ParserFactory
-      URL_RE = ORegexp.new("news\.bbc\.co\.uk/.*/[0-9]+\.stm")
-      INVALID_URL_RE = ORegexp.new("in_pictures|pop_ups")
+      URL_RE = ORegexp.new("(www|news)\.bbc\.co\.uk/.+/([a-z]+-)?[0-9]+(\.stm)?$")
+      INVALID_URL_RE = ORegexp.new("in_pictures|pop_ups|sport1")
 
       def self.can_parse?(options)
         if INVALID_URL_RE.match(options[:url])
@@ -92,7 +92,7 @@ module WebPageParser
     end
 
     class BbcNewsPageParserV3 < BbcNewsPageParserV2
-      CONTENT_RE = ORegexp.new('<div id="story-body">(.*?)<div class="bookmark-list">', 'm')
+      CONTENT_RE = ORegexp.new('<div id="story\-body">(.*?)<div class="bookmark-list">', 'm')
       STRIP_FEATURES_RE = ORegexp.new('<div class="story-feature">(.*?)</div>', 'm')
       STRIP_MARKET_DATA_WIDGET_RE = ORegexp.new('<\!\-\- S MD_WIDGET.*? E MD_WIDGET \-\->')
       ICONV = nil # BBC news is now in utf8
@@ -100,6 +100,32 @@ module WebPageParser
       def content_processor
         @content = STRIP_FEATURES_RE.gsub(@content, '')
         @content = STRIP_MARKET_DATA_WIDGET_RE.gsub(@content, '')
+        super
+      end
+    end
+
+    class BbcNewsPageParserV4 < BbcNewsPageParserV3
+      CONTENT_RE = ORegexp.new('<div class=.story-body.>(.*?)<!-- / story\-body', 'm')
+      STRIP_PAGE_BOOKMARKS = ORegexp.new('<div id="page-bookmark-links-head".+?</div>', 'm')
+      STRIP_STORY_DATE = ORegexp.new('<span class="date".+?</span>', 'm')
+      STRIP_STORY_LASTUPDATED = ORegexp.new('<span class="time\-text".+?</span>', 'm')
+      STRIP_STORY_TIME = ORegexp.new('<span class="time".+?</span>', 'm')
+      TITLE_RE = ORegexp.new('<h1 class="story\-header">(.+?)</h1>', 'm')
+      STRIP_CAPTIONS_RE2 = ORegexp.new('<div class=.caption.+?</div>','m')
+      STRIP_HIDDEN_A = ORegexp.new('<a class=.hidden.+?</a>','m')
+      STRIP_STORY_FEATURE = ORegexp.new('<div class=.story\-feature.+?</div>', 'm')
+      STRIP_HYPERPUFF_RE = ORegexp.new('<div class=.embedded-hyper.+?<div class=.hyperpuff.+?</div>.+?</div>', 'm')
+
+      def content_processor
+        @content = STRIP_PAGE_BOOKMARKS.gsub(@content, '')
+        @content = STRIP_STORY_DATE.gsub(@content, '')
+        @content = STRIP_STORY_LASTUPDATED.gsub(@content, '')
+        @content = STRIP_STORY_TIME.gsub(@content, '')
+        @content = TITLE_RE.gsub(@content, '')
+        @content = STRIP_CAPTIONS_RE2.gsub(@content, '')
+        @content = STRIP_HIDDEN_A.gsub(@content, '')
+        @content = STRIP_STORY_FEATURE.gsub(@content, '')
+        @content = STRIP_HYPERPUFF_RE.gsub(@content, '')
         super
       end
     end
