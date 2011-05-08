@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 $:.unshift File.join(File.dirname(__FILE__), '../../lib')
 require 'spec/base_parser_spec'
 require 'web-page-parser'
@@ -69,6 +70,18 @@ describe BbcNewsPageParserV4 do
     @pa.content.size.should == 18
   end
 
+  it "should parse the content of an article with market data" do
+    @pa = BbcNewsPageParserV4.new(:page => File.read('spec/fixtures/bbc_news/13293006.html'))
+    @pa.content.to_s.should_not =~ /Market Data/
+    @pa.content.to_s.should_not =~ /Last updated at/
+    @pa.content.size.should == 13
+  end
+
+  it "should ignore embedded-hyper content" do
+    @pa = BbcNewsPageParserV4.new(:page => File.read('spec/fixtures/bbc_news/12921632.html'))
+    @pa.content.to_s.should_not =~ /Fake and real quotes/
+  end
+
 end
 
 
@@ -98,8 +111,6 @@ describe BbcNewsPageParserV3 do
     @pa.content[1].should == "These include an £80m loan to Sheffield Forgemasters and new programmes for the young unemployed, Chief Secretary to the Treasury Danny Alexander told MPs."
     @pa.content[2].should == 'Mr Alexander said the cuts were necessary to tackle the budget deficit and would be done in a "fair" way.'
   end
-    
-
   
 end
 

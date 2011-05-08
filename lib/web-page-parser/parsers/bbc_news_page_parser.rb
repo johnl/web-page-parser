@@ -115,6 +115,8 @@ module WebPageParser
       STRIP_HIDDEN_A = ORegexp.new('<a class=.hidden.+?</a>','m')
       STRIP_STORY_FEATURE = ORegexp.new('<div class=.story\-feature.+?</div>', 'm')
       STRIP_HYPERPUFF_RE = ORegexp.new('<div class=.embedded-hyper.+?<div class=.hyperpuff.+?</div>.+?</div>', 'm')
+      STRIP_MARKETDATA_RE = ORegexp.new('<div class=.market\-data.+?</div>', 'm')
+      STRIP_EMBEDDEDHYPER_RE = ORegexp.new('<div class=.embedded\-hyper.+?</div>', 'm')
 
       def content_processor
         @content = STRIP_PAGE_BOOKMARKS.gsub(@content, '')
@@ -126,6 +128,8 @@ module WebPageParser
         @content = STRIP_HIDDEN_A.gsub(@content, '')
         @content = STRIP_STORY_FEATURE.gsub(@content, '')
         @content = STRIP_HYPERPUFF_RE.gsub(@content, '')
+        @content = STRIP_MARKETDATA_RE.gsub(@content, '')
+        @content = STRIP_EMBEDDEDHYPER_RE.gsub(@content, '')
         super
       end
     end
