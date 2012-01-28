@@ -17,7 +17,8 @@ describe GuardianPageParserFactory do
                      "http://www.guardian.co.uk/mobile/apps",
                      "http://www.guardian.co.uk/business/nils-pratley-on-finance",
                      "http://www.guardian.co.uk/commentisfree/commentisfree+uk/uk",
-                     "http://www.guardian.co.uk/help/feeds"
+                     "http://www.guardian.co.uk/help/feeds",
+                     "http://www.guardian.co.uk/uk/cartoon/2012/jan/28/nicolas-sarkozy-caricature"
                     ]
   end
 
