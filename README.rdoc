@@ -2,12 +2,20 @@
 
 Web Page Parser is a Ruby library to parse the content out of web
 pages, such as BBC News pages. It strips all non-textual stuff out,
-leaving the title, publication date and an array of paragraphs. It
-currently only supports BBC News pages but new parsers are planned and
-can be added easily.
+leaving the title, publication date and an array of paragraphs.  It
+makes heavy use of regular expressions, rather than actually parsing
+the HTML. This may sound a bit whacky, but BBC News html in particular
+has semantic markup *within comments*, which cannot easily be
+referenced with standard HTML parsing.  Regular expressions are much
+faster than full HTML parsing too.
 
-It is used by the {News Sniffer}[http://www.newssniffer.co.uk] project, which parses and archives news
-articles to keep track of how they change.
+
+Web Page Parser currently supports BBC News pages and Guardian news
+articles but new parsers are planned and can be added easily.
+
+It is used by the {News Sniffer}[http://www.newssniffer.co.uk]
+project, which parses and archives news articles to keep track of how
+they change.
 
 == Example usage
 
@@ -25,7 +33,9 @@ articles to keep track of how they change.
 
 == More Info
 
-Web Page Parser was written by {John Leach}[http://johnleach.co.uk].
+Web Page Parser was written by {John Leach}[http://johnleach.co.uk]
+and is released under the MIT License.
 
-The code is available on {github}[http://github.com/johnl/web-page-parser/tree/master].
+The code is available on
+{github}[http://github.com/johnl/web-page-parser/tree/master].
 
