@@ -19,7 +19,11 @@ describe GuardianPageParserFactory do
                      "http://www.guardian.co.uk/commentisfree/commentisfree+uk/uk",
                      "http://www.guardian.co.uk/help/feeds",
                      "http://www.guardian.co.uk/uk/cartoon/2012/jan/28/nicolas-sarkozy-caricature",
-                     "http://www.guardian.co.uk/commentisfree/poll/2012/jan/30/smacking-children-david-lammy"
+                     "http://www.guardian.co.uk/commentisfree/poll/2012/jan/30/smacking-children-david-lammy",
+                     "http://www.guardian.co.uk/uk/video/2012/may/13/occupy-protesters-clash-police-video",
+                     "http://www.guardian.co.uk/uk/gallery/2012/may/10/public-sector-protests-in-pictures",
+                     "http://www.guardian.co.uk/media/video/2012/may/24/chris-huhne-partner-privacy-case-video",
+                     "http://www.guardian.co.uk/business/poll/2012/may/09/greek-exit-euro-inevitable"
                     ]
   end
 
