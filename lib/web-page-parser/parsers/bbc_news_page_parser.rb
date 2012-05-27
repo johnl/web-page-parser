@@ -6,10 +6,11 @@ module WebPageParser
       INVALID_URL_RE = ORegexp.new("in_pictures|pop_ups|sport1")
 
       def self.can_parse?(options)
-        if INVALID_URL_RE.match(options[:url])
+        url = options[:url].split('#').first
+        if INVALID_URL_RE.match(url)
           nil
         else
-          URL_RE.match(options[:url])
+          URL_RE.match(url)
         end
       end
 

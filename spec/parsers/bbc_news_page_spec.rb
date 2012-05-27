@@ -14,7 +14,7 @@ describe BbcNewsPageParserFactory do
                    "http://news.bbc.co.uk/2/low/uk_news/england/devon/7996447.stm",
                    "http://www.bbc.co.uk/news/business-11125504",
                    "http://www.bbc.co.uk/news/10604897",
-                   "http://www.bbc.co.uk/news/world-middle-east-13373006"
+                   "http://www.bbc.co.uk/news/world-middle-east-18229870#sa-ns_mchannel=rss&ns_source=PublicRSS20-sa"
                   ]
     @invalid_urls = [
                      "http://news.bbc.co.uk/2/hi/health/default.stm",

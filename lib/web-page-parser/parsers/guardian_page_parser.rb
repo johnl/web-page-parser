@@ -3,8 +3,9 @@ module WebPageParser
     URL_RE = ORegexp.new("(www\.)?guardian\.co\.uk/[a-z-]+(/[a-z-]+)?/[0-9]{4}/[a-z]{3}/[0-9]{1,2}/[a-z-]{5,200}$")
     INVALID_URL_RE = ORegexp.new("/cartoon/|/commentisfree/poll/")
     def self.can_parse?(options)
-      return nil if INVALID_URL_RE.match(options[:url])
-      URL_RE.match(options[:url])
+      url = options[:url].split('#').first
+      return nil if INVALID_URL_RE.match(url)
+      URL_RE.match(url)
     end
     
     def self.create(options = {})
