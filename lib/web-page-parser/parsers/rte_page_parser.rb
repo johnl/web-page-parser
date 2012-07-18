@@ -1,7 +1,7 @@
 module WebPageParser
   class RtePageParserFactory < WebPageParser::ParserFactory
     URL_RE = ORegexp.new("(www\.)?rte\.ie/[a-z-]+/[0-9]{4}/[0-9]{4}/[a-z-].[a-z-]{4}")
-    INVALID_URL_RE = ORegexp.new("/cartoon/|/commentisfree/poll/|/video/[0-9]+|/gallery/[0-9]+|/poll/[0-9]+")
+    INVALID_URL_RE = ORegexp.new("/sport/|/cartoon/|/commentisfree/poll/|/video/[0-9]+|/gallery/[0-9]+|/poll/[0-9]+")
 
     def self.can_parse?(options)
       url = options[:url].split('#').first
