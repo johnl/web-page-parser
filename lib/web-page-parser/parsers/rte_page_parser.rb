@@ -18,8 +18,8 @@ module WebPageParser
     ICONV = nil
     TITLE_RE = ORegexp.new('<meta name="DC.title" scheme="DCTERMS.URI" content="(.*)"', 'i')
     DATE_RE = ORegexp.new('<meta name="datemodified" content="(.*)"', 'i')
-    CONTENT_RE = ORegexp.new('"storyBody">(.*?)<div id="user-options-bottom">', 'm')
-
+    #CONTENT_RE = ORegexp.new('"storyBody">(.*?)<div id="user-options-bottom">', 'm')
+    CONTENT_RE = ORegexp.new('class="rte_gr_8">(.*?)<div id="user-options-bottom">', 'm')
     STRIP_TAGS_RE = ORegexp.new('</?(a|span|div|img|tr|td|!--|table)[^>]*>','i')
     PARA_RE = Regexp.new(/<(p|h2)[^>]*>(.*?)<\/\1>/i)
 

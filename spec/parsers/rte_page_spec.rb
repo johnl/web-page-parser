@@ -36,7 +36,7 @@ describe RtePageParserV1 do
       @valid_options = { 
         :url => 'http://www.rte.ie/news/2012/0718/aer-lingus-repeats-call-to-reject-ryanair-offer-business.html',
         :page => File.read("spec/fixtures/rte/aer-lingus-repeats-call-to-reject-ryanair-offer-business.html"),
-        :valid_hash => '90d6badd914b93af389c3ba9b8d83f0f'
+        :valid_hash => '803be530c7c3360d136b73e5531e9083'
       }
       @pa = RtePageParserV1.new(@valid_options)
     end
@@ -52,10 +52,12 @@ describe RtePageParserV1 do
 
 
     it "should parse the content" do
-      @pa.content[0].should == "The company will be writing to shareholders in the next 14 days to set out in detail its reasons for rejecting the offer."
-      @pa.content[7].should == "Ryanair is seeking acceptance of the bid by 13 September."
+      @pa.content[1].should == "Aer Lingus has issued a statement this morning calling on shareholders to reject Ryanair's offer."
+
+      @pa.content[2].should == "The company will be writing to shareholders in the next 14 days to set out in detail its reasons for rejecting the offer."
+      @pa.content[9].should == "Ryanair is seeking acceptance of the bid by 13 September."
       @pa.content.last.should == "An investigation is also being carried out into Ryanair's current holding by the UK Competition Commission."
-      @pa.content.size.should == 9
+      @pa.content.size.should == 11         
       @pa.hash.should == @valid_options[:valid_hash]
     end
   end
