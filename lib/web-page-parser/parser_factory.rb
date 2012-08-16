@@ -1,5 +1,4 @@
 module WebPageParser
-  require 'oniguruma'
   class ParserFactory
     include Oniguruma
 

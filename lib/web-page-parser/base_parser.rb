@@ -2,7 +2,6 @@
 module WebPageParser
   require 'digest'
   require 'date'
-  require 'oniguruma'
   require 'htmlentities'
   require 'iconv'
 
