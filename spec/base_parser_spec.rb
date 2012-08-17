@@ -6,7 +6,7 @@ share_as :AllPageParsers do
   it "is initialized with a hash containing :url and :page keys" do
     wpp = WebPageParser::BaseParser.new(@valid_options)
     wpp.url.should == @valid_options[:url]
-    wpp.page.should == @valid_options[:page]
+    wpp.page.should == WebPageParser::BaseParser::ICONV.iconv(@valid_options[:page])
   end
   
   it "should return an empty array when there is no content available" do

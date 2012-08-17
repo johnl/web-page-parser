@@ -18,7 +18,7 @@ module WebPageParser
 
     attr_reader :url, :guid, :page
 
-    ICONV = Iconv.new("utf8", "iso-8859-1")
+    ICONV = Iconv.new("utf-8", "iso-8859-1")
 
     # The regular expression to extract the title
     TITLE_RE = //
@@ -40,7 +40,7 @@ module WebPageParser
     # the :page option passes the raw html page content for parsing
     def initialize(options = { })
       @url = options[:url]
-      @page = options[:page]
+      @page = iconv(options[:page])
     end
 
     # The title method returns the title of the web page.
@@ -53,7 +53,6 @@ module WebPageParser
       if matches = class_const(:TITLE_RE).match(page)
         @title = matches[1].to_s.strip
         title_processor
-        @title = iconv(@title)
         @title = decode_entities(@title)
       end
     end
@@ -88,7 +87,6 @@ module WebPageParser
       matches = class_const(:CONTENT_RE).match(page)
       if matches
         @content = class_const(:KILL_CHARS_RE).gsub(matches[1].to_s, '')
-        @content = iconv(@content)
         content_processor
         @content.collect! { |p| decode_entities(p.strip) }
         @content.delete_if { |p| p == '' or p.nil? }        
