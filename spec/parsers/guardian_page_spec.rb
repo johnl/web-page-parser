@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift File.join(File.dirname(__FILE__), '../../lib')
-require 'spec/base_parser_spec'
+$:.unshift File.join(File.dirname(__FILE__), '../../spec')
+require 'base_parser_spec'
 require 'web-page-parser'
 include WebPageParser
 
