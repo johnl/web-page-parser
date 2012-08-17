@@ -32,7 +32,7 @@ share_as :AllPageParsers do
     end
 
     it "calculates a hash using the content" do
-      @wpp.instance_eval("@content='different'")
+      @wpp.instance_eval("@content=['different']")
       @wpp.hash.should_not == @hash
     end
   end

@@ -101,7 +101,7 @@ module WebPageParser
     def hash
       digest = Digest::MD5.new
       digest << title.to_s
-      digest << content.to_s
+      digest << content.join('').to_s
       digest.to_s
     end
 

@@ -34,7 +34,7 @@ module WebPageParser
       
       def hash
         # Old News Sniffer only hashed the content, not the title
-        Digest::MD5.hexdigest(content.to_s)
+        Digest::MD5.hexdigest(content.join('').to_s)
       end
 
       private
