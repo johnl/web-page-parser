@@ -20,6 +20,7 @@ else
     end
   end
 end
-  
+
+require 'web-page-parser/http.rb'  
 require 'web-page-parser/base_parser.rb'
 require 'web-page-parser/parser_factory.rb'

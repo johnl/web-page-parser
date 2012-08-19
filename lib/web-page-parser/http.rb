@@ -1,0 +1,57 @@
+module WebPageParser
+  module HTTP
+    require 'net/http'
+    require 'curb'
+    require 'zlib'
+
+    class Response < String
+      attr_accessor :curl
+
+      def initialize(s, curl)
+        self.curl = curl
+        super(s)
+      end
+    end
+
+    class Session
+
+      def curl
+        @curl ||= Curl::Easy.new do |c|
+          c.timeout = 8
+          c.connect_timeout = 8
+          c.dns_cache_timeout = 600
+          c.enable_cookies = true
+          c.follow_location = true
+          c.autoreferer = true
+          c.headers["User-Agent"] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4'
+          c.headers["Accept-encoding"] = 'gzip, deflate'
+        end
+      end
+
+      def get(url)
+        curl.url = url
+        if curl.perform == false
+          raise "curl error"
+        end
+        uncompressed = gunzip(curl.body_str)
+        uncompressed = inflate(curl.body_str) if uncompressed.nil?
+        Response.new(uncompressed || curl.body_str, curl)
+      end
+
+      def inflate(s)
+        Zlib::Inflate.inflate(s)
+      rescue Zlib::DataError => e
+        nil
+      end
+
+      def gunzip(s)
+        s = StringIO.new(s)
+        Zlib::GzipReader.new(s).read
+      rescue Zlib::DataError => e
+      rescue Zlib::GzipFile::Error => e
+        nil
+      end
+    end
+  end
+
+end

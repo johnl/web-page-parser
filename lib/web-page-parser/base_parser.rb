@@ -16,7 +16,11 @@ module WebPageParser
   class BaseParser
     include Oniguruma
 
-    attr_reader :url, :guid, :page
+    class << self
+      attr_accessor :retrieve_session
+    end
+
+    attr_reader :url, :guid
 
     ICONV = Iconv.new("utf-8", "iso-8859-1")
 
@@ -36,11 +40,24 @@ module WebPageParser
     # The object used to turn HTML entities into real charaters
     HTML_ENTITIES_DECODER = HTMLEntities.new
 
-    # takes a has of options. The :url option passes the page url, and
+    # takes a hash of options. The :url option passes the page url, and
     # the :page option passes the raw html page content for parsing
     def initialize(options = { })
       @url = options[:url]
-      @page = iconv(options[:page])
+      @page = iconv(options[:page]) if options[:page]
+    end
+
+    # return the page contents, retrieving it from the server if necessary
+    def page
+      @page ||= retrieve_page
+    end
+
+    # request the page from the server and return the raw contents
+    def retrieve_page
+      return nil unless url
+      self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
+      puts self.class.retrieve_session.inspect
+      self.class.retrieve_session.get(url)
     end
 
     # The title method returns the title of the web page.
