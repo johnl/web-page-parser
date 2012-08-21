@@ -54,7 +54,6 @@ end
 
 describe BbcNewsPageParserV4 do
   it_should_behave_like AllPageParsers
-  use_vcr_cassette "BbcNewsPageParserV4", :record => :new_episodes
 
   before do
     @valid_options = { 
