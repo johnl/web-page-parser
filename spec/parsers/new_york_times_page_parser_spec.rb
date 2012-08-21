@@ -31,7 +31,6 @@ end
 
 
 describe NewYorkTimesPageParserV1 do
-
   describe "when parsing the Gingrich article" do
     before do
       @valid_options = { 
@@ -51,10 +50,9 @@ describe NewYorkTimesPageParserV1 do
     end
 
     it "should parse the content" do
-      puts @pa.content.inspect
       @pa.content[0].should == "WASHINGTON — Newt Gingrich had an urgent warning for conservatives: Jim Wright, the Democratic speaker of the House, was out to destroy America."
       @pa.content[4].should == "Mr. Gingrich, Democrats and Republicans here agree, emerged as one of Washington’s most aggressive practitioners of slash-and-burn politics; many fault him for erasing whatever civility once existed in the capital. He believed, and preached, that harsh language could win elections; in 1990, the political action committee he ran, Gopac, instructed Republican candidates to learn to “speak like Newt,” and offered a list of words to describe Democrats — like decay, traitors, radical, sick, destroy, pathetic, corrupt and shame."
-      @pa.content.size.should == 13
+      @pa.content.size.should == 48
     end
   end
 
