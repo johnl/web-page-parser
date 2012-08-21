@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-$:.unshift File.join(File.dirname(__FILE__), '../../lib')
-require 'spec/base_parser_spec'
-require 'web-page-parser'
+require 'spec_helper'
+
 include WebPageParser
 
 describe NewYorkTimesPageParserFactory do
