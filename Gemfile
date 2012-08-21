@@ -10,3 +10,7 @@ platforms :ruby_18 do
   gem "oniguruma", ">=1.1.0"
 end
 
+group :development do
+  gem 'webmock', '~>1.8.9'
+  gem 'vcr', '~>2.2.4'
+end

@@ -1,6 +1,5 @@
 module WebPageParser
   module HTTP
-    require 'net/http'
     require 'curb'
     require 'zlib'
 
@@ -40,15 +39,15 @@ module WebPageParser
 
       def inflate(s)
         Zlib::Inflate.inflate(s)
-      rescue Zlib::DataError => e
+      rescue Zlib::DataError
         nil
       end
 
       def gunzip(s)
         s = StringIO.new(s)
         Zlib::GzipReader.new(s).read
-      rescue Zlib::DataError => e
-      rescue Zlib::GzipFile::Error => e
+      rescue Zlib::DataError
+      rescue Zlib::GzipFile::Error
         nil
       end
     end

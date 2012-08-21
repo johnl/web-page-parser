@@ -1,6 +1,8 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    addressable (2.3.2)
+    crack (0.3.1)
     curb (0.8.0)
     diff-lcs (1.1.2)
     htmlentities (4.3.1)
@@ -14,6 +16,10 @@ GEM
     rspec-expectations (2.5.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.5.0)
+    vcr (2.2.4)
+    webmock (1.8.9)
+      addressable (>= 2.2.7)
+      crack (>= 0.1.7)
 
 PLATFORMS
   ruby
@@ -24,3 +30,5 @@ DEPENDENCIES
   oniguruma (>= 1.1.0)
   rake
   rspec (= 2.5.0)
+  vcr (~> 2.2.4)
+  webmock (~> 1.8.9)

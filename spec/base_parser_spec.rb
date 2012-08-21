@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-$:.unshift File.join(File.dirname(__FILE__), '../lib')
-require 'web-page-parser'
+require 'spec_helper'
 
 share_as :AllPageParsers do
   it "is initialized with a hash containing :url and :page keys" do

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-$:.unshift File.join(File.dirname(__FILE__), '../../lib')
-$:.unshift File.join(File.dirname(__FILE__), '../../spec')
-require 'base_parser_spec'
-require 'web-page-parser'
+require 'spec_helper'
 include WebPageParser
 
 describe GuardianPageParserFactory do

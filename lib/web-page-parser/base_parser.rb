@@ -56,7 +56,6 @@ module WebPageParser
     def retrieve_page
       return nil unless url
       self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
-      puts self.class.retrieve_session.inspect
       self.class.retrieve_session.get(url)
     end
 

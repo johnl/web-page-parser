@@ -1,5 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__), '../lib')
-require 'web-page-parser'
+require 'spec_helper'
 include WebPageParser
 
 describe ParserFactory do

@@ -2,6 +2,7 @@
 $:.unshift File.join(File.dirname(__FILE__), '../../lib')
 $:.unshift File.join(File.dirname(__FILE__), '../../spec')
 require 'base_parser_spec'
+require 'spec_helper'
 require 'web-page-parser'
 include WebPageParser
 
@@ -53,6 +54,8 @@ end
 
 describe BbcNewsPageParserV4 do
   it_should_behave_like AllPageParsers
+  use_vcr_cassette "BbcNewsPageParserV4", :record => :new_episodes
+
   before do
     @valid_options = { 
       :url => 'http://www.bbc.co.uk/news/business-11125504',
@@ -82,6 +85,11 @@ describe BbcNewsPageParserV4 do
   it "should ignore embedded-hyper content" do
     @pa = BbcNewsPageParserV4.new(:page => File.read('spec/fixtures/bbc_news/12921632.html'))
     @pa.content.to_s.should_not =~ /Fake and real quotes/
+  end
+
+  it "should retrieve the article from the bbc website" do
+    @pa = BbcNewsPageParserV4.new(:url => @valid_options[:url])
+    @pa.title.should == "UK economy 'to pick up in near term'"
   end
 
 end
