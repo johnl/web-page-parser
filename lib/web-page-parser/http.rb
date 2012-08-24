@@ -34,7 +34,12 @@ module WebPageParser
         end
         uncompressed = gunzip(curl.body_str)
         uncompressed = inflate(curl.body_str) if uncompressed.nil?
-        Response.new(uncompressed || curl.body_str, curl)
+        final_body = uncompressed || curl.body_str
+        if final_body.respond_to?(:force_encoding)
+          # Not sure if this is right. works for BBC/Guardian/New York Times anyway
+          final_body.force_encoding("utf-8")
+        end
+        Response.new(final_body, curl)
       end
 
       def inflate(s)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
-
+require 'net/http'
 include WebPageParser
 
 describe NewYorkTimesPageParserFactory do
   before do
     @valid_urls = [
-                   "http://www.nytimes.com/2012/01/28/us/politics/no-more-nice-guys-fans-love-nuclear-newt.html",
+                   "http://www.nytimes.com/2012/01/28/us/politics/no-more-nice-guys-fans-love-nuclear-newt.html?_r=1&ref=us",
                    "http://www.nytimes.com/2012/01/29/business/global/greece-in-talks-with-creditors-on-debt-deal.html",
                   ]
     @invalid_urls = [
@@ -81,6 +81,40 @@ describe NewYorkTimesPageParserV1 do
       @pa.content.size.should == 7
       @pa.hash.should == @valid_options[:valid_hash]
     end
+  end
+
+  describe "retrieve_page" do
+    it "should retrieve the article from the nyt website" do
+      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/22/us/politics/ignoring-calls-to-quit-akin-appeals-to-voters-in-ad.html?hp")
+      @pa.title.should =~ /ignoring/i
+    end
+
+    it "should retrieve the full article from the nyt website when given a first page url" do
+      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html?ref=world")
+      @pa.content.size.should > 40
+      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html")
+      @pa.content.size.should > 40
+    end
+
+    it "should retrieve more than the paywall url limit" do
+      urls = []
+      [
+       "http://feeds.nytimes.com/nyt/rss/HomePage",
+       "http://rss.nytimes.com/services/xml/rss/nyt/GlobalHome.xml",
+       "http://feeds.nytimes.com/nyt/rss/NYRegion"
+      ].each do |fu|
+        urls += Net::HTTP.get(URI(fu)).scan(/http:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
+      end
+
+      urls.uniq!
+      urls.size.should > 25
+      urls[0..24].each_with_index do |u,i|
+        @pa = NewYorkTimesPageParserV1.new(:url => u)
+        @pa.page.curl.header_str.to_s.scan(/^Location: .*/).grep(/myaccount.nytimes.com/).should be_empty
+        @pa.title.should_not =~ /^Log In/
+      end
+    end
+
   end
 
 end

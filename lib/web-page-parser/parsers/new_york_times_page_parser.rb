@@ -1,6 +1,6 @@
 module WebPageParser
   class NewYorkTimesPageParserFactory < WebPageParser::ParserFactory
-    URL_RE = ORegexp.new("www\.nytimes\.com/[0-9]{4}/[0-9]{2}/[0-9]{2}/.+\.html$")
+    URL_RE = ORegexp.new("www\.nytimes\.com/[0-9]{4}/[0-9]{2}/[0-9]{2}/.+")
     INVALID_URL_RE = ORegexp.new("/cartoon/")
     def self.can_parse?(options)
       return nil if INVALID_URL_RE.match(options[:url])
@@ -12,10 +12,7 @@ module WebPageParser
     end
   end
 
-  # BbcNewsPageParserV1 parses BBC News web pages exactly like the
-  # old News Sniffer BbcNewsPage class did.  This should only ever
-  # be used for backwards compatability with News Sniffer and is
-  # never supplied for use by a factory.
+  # NewYorkTimesPageParserV1 parses New York Times web pages
   class NewYorkTimesPageParserV1 < WebPageParser::BaseParser
     ICONV = nil
     TITLE_RE = ORegexp.new('<nyt_headline [^>]*>(.*)</nyt_headline>', 'i')
@@ -24,6 +21,15 @@ module WebPageParser
     STRIP_TAGS_RE = ORegexp.new('</?(a|strong|span|div|img|tr|td|!--|table|ul|li)[^>]*>','i')
     PARA_RE = Regexp.new('<(p)[^>]*>(.*?)<\/\1>', 'i')
     STRIP_INLINE_BLOCK = ORegexp.new('<div class="articleInline.*<div class="articleBody[^>]*>', 'm')
+
+    # We want to modify the url to request multi-page articles all in one request
+    def retrieve_page
+      return nil unless url
+      spurl = url
+      spurl << (spurl.include?("?") ? "&" : "?")
+      spurl << "pagewanted=all"
+      super(spurl)
+    end
 
     private
     
