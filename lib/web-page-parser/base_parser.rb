@@ -5,6 +5,8 @@ module WebPageParser
   require 'htmlentities'
   require 'iconv'
 
+  class RetrieveError < StandardError ; end
+
   # BaseParse is designed to be sub-classed to write new parsers.  It
   # provides some basic help but most of the work needs to be done by
   # the sub-class.

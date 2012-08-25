@@ -28,11 +28,30 @@ module WebPageParser
       spurl = url
       spurl << (spurl.include?("?") ? "&" : "?")
       spurl << "pagewanted=all"
-      super(spurl)
+      p = super(spurl)
+      # If it fails, reset the session and try one more time
+      unless retreive_successful?(p)
+        self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
+        p = super(spurl)
+      end
+      if retreive_successful?(p)
+        p
+      else
+        raise RetrieveError, "Blocked by NYT paywall"
+      end
     end
 
+
     private
-    
+
+    def retreive_successful?(page)
+      if page and page.curl
+        page.curl.header_str.scan(/^Location: .*/).grep(/myaccount.nytimes.com/).empty?
+      else
+        false
+      end
+    end
+
     def date_processor
       begin
         # OPD is in GMT/UTC, which DateTime seems to use by default

@@ -14,6 +14,8 @@ module WebPageParser
 
     class Session
 
+      class CurlError < StandardError ; end
+
       def curl
         @curl ||= Curl::Easy.new do |c|
           c.timeout = 8
@@ -30,7 +32,7 @@ module WebPageParser
       def get(url)
         curl.url = url
         if curl.perform == false
-          raise "curl error"
+          raise CurlError, "curl.perform returned false"
         end
         uncompressed = gunzip(curl.body_str)
         uncompressed = inflate(curl.body_str) if uncompressed.nil?
