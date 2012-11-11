@@ -101,7 +101,8 @@ describe NewYorkTimesPageParserV1 do
       [
        "http://feeds.nytimes.com/nyt/rss/HomePage",
        "http://rss.nytimes.com/services/xml/rss/nyt/GlobalHome.xml",
-       "http://feeds.nytimes.com/nyt/rss/NYRegion"
+       "http://feeds.nytimes.com/nyt/rss/NYRegion",
+       "http://www.nytimes.com/services/xml/rss/nyt/World.xml"
       ].each do |fu|
         urls += Net::HTTP.get(URI(fu)).scan(/http:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
       end
