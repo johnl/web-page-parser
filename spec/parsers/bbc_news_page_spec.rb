@@ -99,6 +99,15 @@ describe BbcNewsPageParserV4 do
     pa.content.last.should == "Are you a voter in one of the swing states? Send us your comments on the election campaign using the form below."
   end
 
+  it "should ignore the 'latest' twitter widget" do
+    pa = BbcNewsPageParserV4.new(:url => "http://www.bbc.co.uk/news/uk-19957138", :page => File.read("spec/fixtures/bbc_news/19957138.stm.html"))
+    pa.title.should == "Gary McKinnon extradition to US blocked by Theresa May"
+    pa.content.to_s.should_not =~ /High Noon for Abu Qatada?/
+    pa.content.to_s.should_not =~ /Content from Twitter./
+    pa.content.last.should == "Mr McKinnon was arrested in 2002 and again in 2005 before an order for his extradition was made in July 2006 under the 2003 Extradition Act."
+  end
+
+
 end
 
 
