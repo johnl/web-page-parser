@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
 	s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
 
-  s.add_dependency("oniguruma", ">=1.1.0")
   s.add_dependency("htmlentities", ">=4.0.0")
   s.add_dependency("curb", ">=0.8")
 end

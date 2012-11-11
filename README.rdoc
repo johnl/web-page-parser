@@ -31,6 +31,11 @@ they change.
   puts page.date # 2009-05-09T18:58:59+00:00
   puts page.content.first # The wife of author Ken Follett and ...
 
+== Ruby 1.8 support
+
+Installing the Oniguruma gem on Ruby 1.8 will make Web Page Parser run
+faster, it's highly recommended but not required.
+
 == More Info
 
 Web Page Parser was written by {John Leach}[http://johnleach.co.uk]
