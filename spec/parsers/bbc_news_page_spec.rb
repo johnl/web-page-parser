@@ -91,6 +91,14 @@ describe BbcNewsPageParserV4 do
     @pa.title.should == "UK economy 'to pick up in near term'"
   end
 
+  it "should ignore the twitter widget" do
+    pa = BbcNewsPageParserV4.new(:url => "http://www.bbc.co.uk/news/world-us-canada-20230333", :page => File.read("spec/fixtures/bbc_news/20230333.stm.html"))
+    pa.title.should == "US election: Results declared from some states"
+    pa.content.first.should == "President Barack Obama and challenger Mitt Romney remain locked in a tight race as US election results stream in."
+    pa.content.to_s.should_not =~ /US Election Tweets/
+    pa.content.last.should == "Are you a voter in one of the swing states? Send us your comments on the election campaign using the form below."
+  end
+
 end
 
 
