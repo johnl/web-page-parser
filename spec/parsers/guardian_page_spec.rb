@@ -93,4 +93,42 @@ describe GuardianPageParserV1 do
       @pa.hash.should == @valid_options[:valid_hash]
     end
   end
+
+
+
+  describe "when parsing the barack obama-nicki-minaj article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/music/2012/oct/16/barack-obama-nicki-minaj-mariah-carey',
+        :page => File.read("spec/fixtures/guardian/barack-obama-nicki-minaj-mariah-carey.html"),
+        :valid_hash => '22fe55dc3664662ac6c1c79eac584754'
+      }
+      @pa = GuardianPageParserV1.new(@valid_options)
+    end
+
+    it "should not include +explainerText+" do
+      @pa.hash.should == @valid_options[:valid_hash]
+      @pa.content.to_s.should_not =~ /explainerText/
+    end
+  end
+
+  describe "when parsing the anger-grows article with the explainerText javascript" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/business/2012/jan/27/anger-grows-rbs-chiefs-bonus',
+        :page => File.read("spec/fixtures/guardian/anger-grows-rbs-chiefs-bonus-with-explainer.html"),
+        :valid_hash => '04108a9a7e3196da185e4d10432740a1'
+      }
+      @pa = GuardianPageParserV1.new(@valid_options)
+    end
+
+    it "should have the same hash as before" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should not include +explainerText+" do
+      @pa.content.to_s.should_not =~ /explainerText/
+    end
+  end
+
 end

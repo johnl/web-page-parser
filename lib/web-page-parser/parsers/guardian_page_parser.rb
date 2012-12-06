@@ -23,6 +23,7 @@ module WebPageParser
     DATE_RE = ORegexp.new('<meta property="article:published_time" content="(.*)"', 'i')
     CONTENT_RE = ORegexp.new('article-body-blocks">(.*?)<div id="related"', 'm')
     STRIP_TAGS_RE = ORegexp.new('</?(a|span|div|img|tr|td|!--|table)[^>]*>','i')
+    STRIP_SCRIPTS_RE = ORegexp.new('<script[^>]*>.*?</script>','i')
     PARA_RE = Regexp.new(/<(p|h2)[^>]*>(.*?)<\/\1>/i)
 
     private
@@ -38,6 +39,7 @@ module WebPageParser
 
     def content_processor
       @content = STRIP_TAGS_RE.gsub(@content, '')
+      @content = STRIP_SCRIPTS_RE.gsub(@content, '')
       @content = @content.scan(PARA_RE).collect { |a| a[1] }
     end
     
