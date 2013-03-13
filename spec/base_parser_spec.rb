@@ -5,9 +5,9 @@ share_as :AllPageParsers do
   it "is initialized with a hash containing :url and :page keys" do
     wpp = WebPageParser::BaseParser.new(@valid_options)
     wpp.url.should == @valid_options[:url]
-    wpp.page.should == WebPageParser::BaseParser::ICONV.iconv(@valid_options[:page])
+    wpp.page.should == @valid_options[:page]
   end
-  
+
   it "should return an empty array when there is no content available" do
     content = WebPageParser::BaseParser.new.content
     content.should be_a_kind_of Array
@@ -41,16 +41,29 @@ describe WebPageParser::BaseParser do
   it_should_behave_like AllPageParsers
 
   before :each do
-    @valid_options = { 
-      :url => 'http://news.bbc.co.uk', 
+    @valid_options = {
+      :url => 'http://news.bbc.co.uk',
       :page => '<html></html>',
       :valid_hash => 'cfcd208495d565ef66e7dff9f98764da'
     }
   end
 
+end
+
+describe WebPageParser::BaseRegexpParser do
+  it_should_behave_like AllPageParsers
+
+  before :each do
+    @valid_options = {
+      :url => 'http://news.bbc.co.uk',
+      :page => "<html>\243</html>"
+    }
+  end
+
+
   it "should decode basic html entities" do
-    bp = WebPageParser::BaseParser.new
-    entities = { 
+    bp = WebPageParser::BaseRegexpParser.new
+    entities = {
       '&quot;' => '"',
       '&apos;' => "'",
       '&amp;' => "&",
@@ -62,5 +75,9 @@ describe WebPageParser::BaseParser do
     end
   end
 
+  it "should use convert from to utf8" do
+    wpp = WebPageParser::BaseRegexpParser.new(@valid_options)
+    wpp.page.should == "<html>£</html>"
+  end
 
 end

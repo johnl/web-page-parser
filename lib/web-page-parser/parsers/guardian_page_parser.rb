@@ -17,7 +17,7 @@ module WebPageParser
   # old News Sniffer BbcNewsPage class did.  This should only ever
   # be used for backwards compatability with News Sniffer and is
   # never supplied for use by a factory.
-  class GuardianPageParserV1 < WebPageParser::BaseParser
+  class GuardianPageParserV1 < WebPageParser::BaseRegexpParser
     ICONV = nil
     TITLE_RE = ORegexp.new('<meta property="og:title" content="(.*)"', 'i')
     DATE_RE = ORegexp.new('<meta property="article:published_time" content="(.*)"', 'i')

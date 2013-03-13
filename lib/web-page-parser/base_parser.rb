@@ -7,16 +7,7 @@ module WebPageParser
 
   class RetrieveError < StandardError ; end
 
-  # BaseParse is designed to be sub-classed to write new parsers.  It
-  # provides some basic help but most of the work needs to be done by
-  # the sub-class.
-  #
-  # Simple pages could be implemented by just defining new regular
-  # expression constants, but more advanced parsing can be achieved
-  # with the *_processor methods.
-  #
   class BaseParser
-    include Oniguruma
 
     class << self
       attr_accessor :retrieve_session
@@ -24,29 +15,78 @@ module WebPageParser
 
     attr_reader :url, :guid
 
-    ICONV = Iconv.new("utf-8", "iso-8859-1")
-
-    # The regular expression to extract the title
-    TITLE_RE = //
-    
-    # The regular expression to extract the date
-    DATE_RE = //
-    
-    # The regular expression to extract the content
-    CONTENT_RE = //
-    
-    # The regular expression to find all characters that should be
-    # removed from any content.
-    KILL_CHARS_RE = ORegexp.new('[\n\r]+')
-    
-    # The object used to turn HTML entities into real charaters
-    HTML_ENTITIES_DECODER = HTMLEntities.new
-
     # takes a hash of options. The :url option passes the page url, and
     # the :page option passes the raw html page content for parsing
     def initialize(options = { })
       @url = options[:url]
-      @page = iconv(options[:page]) if options[:page]
+      @page = options[:page]
+    end
+
+    # return the page contents, retrieving it from the server if necessary
+    def page
+      @page ||= retrieve_page
+    end
+
+    # request the page from the server and return the raw contents
+    def retrieve_page(rurl = nil)
+      return nil unless (rurl || url)
+      self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
+      self.class.retrieve_session.get(rurl || url)
+    end
+
+    def title
+      @title
+    end
+
+    def content
+      @content || []
+    end
+
+    def date
+    end
+
+    # Return a hash representing the textual content of this web page
+    def hash
+      digest = Digest::MD5.new
+      digest << title.to_s
+      digest << content.join('').to_s
+      digest.to_s
+    end
+
+  end
+
+  # BaseRegexpParser is designed to be sub-classed to write new
+  # parsers that use regular. It provides some basic help but most of
+  # the work needs to be done by the sub-class.
+  #
+  # Simple pages could be implemented by just defining new regular
+  # expression constants, but more advanced parsing can be achieved
+  # with the *_processor methods.
+  #
+  class BaseRegexpParser < BaseParser
+    include Oniguruma
+
+    ICONV = Iconv.new("utf-8", "iso-8859-1")
+
+    # The regular expression to extract the title
+    TITLE_RE = //
+
+    # The regular expression to extract the date
+    DATE_RE = //
+
+    # The regular expression to extract the content
+    CONTENT_RE = //
+
+    # The regular expression to find all characters that should be
+    # removed from any content.
+    KILL_CHARS_RE = ORegexp.new('[\n\r]+')
+
+    # The object used to turn HTML entities into real charaters
+    HTML_ENTITIES_DECODER = HTMLEntities.new
+
+    def initialize(options = { })
+      super(options)
+      @page = iconv(@page) if @page
     end
 
     # return the page contents, retrieving it from the server if necessary
@@ -107,27 +147,19 @@ module WebPageParser
         @content = class_const(:KILL_CHARS_RE).gsub(matches[1].to_s, '')
         content_processor
         @content.collect! { |p| decode_entities(p.strip) }
-        @content.delete_if { |p| p == '' or p.nil? }        
+        @content.delete_if { |p| p == '' or p.nil? }
       end
       @content = [] if @content.nil?
       @content
-    end
-
-    # Return a hash representing the textual content of this web page
-    def hash
-      digest = Digest::MD5.new
-      digest << title.to_s
-      digest << content.join('').to_s
-      digest.to_s
     end
 
     # Convert html entities to unicode
     def decode_entities(s)
       HTML_ENTITIES_DECODER.decode(s)
     end
-    
+
     private
-    
+
     # get the constant from this objects class
     def class_const(sym)
       self.class.const_get(sym)
@@ -138,7 +170,7 @@ module WebPageParser
       if class_const(:ICONV) and ICONV
         class_const(:ICONV).iconv(s)
       else
-        s        
+        s
       end
     end
 
@@ -147,16 +179,16 @@ module WebPageParser
     def content_processor
       @content = @content.split(/<p>/)
     end
-    
+
     # Custom date parsing.  It should parse @date into a DateTime object
     def date_processor
     end
-    
+
     # Custom title parsing.  It should clean up @title as
     # necessary. Conversion to utf8 is done after this method.
     def title_processor
     end
-    
+
   end
 
 

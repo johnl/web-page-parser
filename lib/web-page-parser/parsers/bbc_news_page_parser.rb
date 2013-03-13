@@ -15,7 +15,7 @@ module WebPageParser
       end
 
       def self.create(options = {})
-        BbcNewsPageParserV4.new(options)
+        BbcNewsPageParserV5.new(options)
       end
     end
 
@@ -23,7 +23,7 @@ module WebPageParser
     # old News Sniffer BbcNewsPage class did.  This should only ever
     # be used for backwards compatability with News Sniffer and is
     # never supplied for use by a factory.
-    class BbcNewsPageParserV1 < WebPageParser::BaseParser
+    class BbcNewsPageParserV1 < WebPageParser::BaseRegexpParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
@@ -58,7 +58,7 @@ module WebPageParser
     end
 
     # BbcNewsPageParserV2 parses BBC News web pages
-    class BbcNewsPageParserV2 < WebPageParser::BaseParser
+    class BbcNewsPageParserV2 < WebPageParser::BaseRegexpParser
 
       TITLE_RE = ORegexp.new('<meta name="Headline" content="(.*)"', 'i')
       DATE_RE = ORegexp.new('<meta name="OriginalPublicationDate" content="(.*)"', 'i')
@@ -137,5 +137,66 @@ module WebPageParser
         super
       end
     end
-    
+
+
+    class BbcNewsPageParserV5 < WebPageParser::BaseParser
+      ICONV = nil
+      require 'nokogiri'
+
+      def html_doc
+        @html_document ||= Nokogiri::HTML(page)
+      end
+
+      def title
+        return @title if @title
+        @title = html_doc.css('h1.story-header').text.strip
+
+        # for older bbc articles
+        if @title.empty?
+          @title = html_doc.css('div#meta-information h1').text.strip
+        end
+
+        # for very old bbc articles
+        if @title.empty?
+          if headline_meta = html_doc.at_css('meta[name=Headline]')
+            @title = headline_meta['content'].to_s.strip
+          end
+        end
+
+        @title
+      end
+
+      def content
+        return @content if @content
+        @content = []
+        story_body = html_doc.css('div.story-body')
+
+        # for older bbc articles
+        if story_body.children.empty?
+          story_body = html_doc.css('div#story-body')
+        end
+
+        # for very old bbc articles
+        if story_body.children.empty?
+          story_body = html_doc.css('td.storybody')
+        end
+
+        story_body.children.each do |n|
+          @content << n.text.strip if n.name == 'p'
+          @content << n.text.strip if n.name == 'span' and n['class'].include? 'cross-head'
+        end
+        @content
+      end
+
+      def date
+        return @date if @date
+        if date_meta = html_doc.at_css('meta[name=OriginalPublicationDate]')
+          @date = DateTime.parse(date_meta['content']) rescue nil
+        end
+        @date
+      end
+
+    end
+
+
 end
