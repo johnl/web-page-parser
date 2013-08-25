@@ -39,10 +39,6 @@ module WebPageParser
 
       private
 
-      def encode(s)
-        s.encode('utf-8', 'iso-8859-1')
-      end
-
       def date_processor
         begin
           # OPD is in GMT/UTC, which DateTime seems to use by default
@@ -75,10 +71,6 @@ module WebPageParser
       PARA_RE = Regexp.new('</?p[^>]*>', Regexp::IGNORECASE)
       
       private
-
-      def encode(s)
-        s.encode('utf-8', 'iso-8859-1')
-      end
       
       def content_processor
         @content = STRIP_CAPTIONS_RE.gsub(@content, '')
@@ -105,9 +97,6 @@ module WebPageParser
       STRIP_FEATURES_RE = ORegexp.new('<div class="story-feature">(.*?)</div>', 'm')
       STRIP_MARKET_DATA_WIDGET_RE = ORegexp.new('<\!\-\- S MD_WIDGET.*? E MD_WIDGET \-\->')
       # BBC news is now in utf8
-      def encode(s)
-        s
-      end
 
       def content_processor
         @content = STRIP_FEATURES_RE.gsub(@content, '')

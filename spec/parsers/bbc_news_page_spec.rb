@@ -298,6 +298,11 @@ describe BbcNewsPageParserV4 do
     pa.content.last.should == "Mr McKinnon was arrested in 2002 and again in 2005 before an order for his extradition was made in July 2006 under the 2003 Extradition Act."
   end
 
+  it "should retrieve an old iso-8859-1 article without getting upset about encoding" do
+    @pa = BbcNewsPageParserV4.new(:url => "http://www.bbc.co.uk/news/magazine-20761954")
+    @pa.title.should == "Quiz of the Year: 52 weeks 52 questions, part four"
+  end
+
 end
 
 

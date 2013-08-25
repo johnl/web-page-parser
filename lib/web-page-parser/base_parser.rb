@@ -89,6 +89,11 @@ module WebPageParser
 
     # Handle any string encoding
     def encode(s)
+      return s if s.nil?
+      return s if s.valid_encoding?
+      if s.force_encoding("iso-8859-1").valid_encoding?
+        return s.encode('utf-8', 'iso-8859-1')
+      end
       s
     end
 
@@ -101,7 +106,7 @@ module WebPageParser
     def retrieve_page(rurl = nil)
       return nil unless (rurl || url)
       self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
-      self.class.retrieve_session.get(rurl || url)
+      encode(self.class.retrieve_session.get(rurl || url))
     end
 
     # The title method returns the title of the web page.
