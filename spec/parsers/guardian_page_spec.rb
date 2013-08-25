@@ -9,6 +9,9 @@ describe GuardianPageParserFactory do
                    "http://www.guardian.co.uk/commentisfree/2012/jan/27/ian-jack-battle-for-scotland",
                    "http://www.guardian.co.uk/environment/bike-blog/2012/jan/27/hgv-cyclists-safety-bike-blog",
                    "http://www.guardian.co.uk/tv-and-radio/2012/jan/26/well-take-manhattan-david-bailey",
+                   "http://www.theguardian.com/world/2013/aug/24/syria-cameron-obama-intervention",
+                   "http://www.theguardian.com/commentisfree/2013/aug/25/coalition-leaders-change-tune-rawnsley",
+                   "http://www.theguardian.com/uk-news/2013/aug/25/police-officer-cleared-taser-brighton"
                   ]
     @invalid_urls = [
                      "http://www.guardian.co.uk/business",
@@ -21,7 +24,9 @@ describe GuardianPageParserFactory do
                      "http://www.guardian.co.uk/uk/video/2012/may/13/occupy-protesters-clash-police-video",
                      "http://www.guardian.co.uk/uk/gallery/2012/may/10/public-sector-protests-in-pictures",
                      "http://www.guardian.co.uk/media/video/2012/may/24/chris-huhne-partner-privacy-case-video",
-                     "http://www.guardian.co.uk/business/poll/2012/may/09/greek-exit-euro-inevitable"
+                     "http://www.guardian.co.uk/business/poll/2012/may/09/greek-exit-euro-inevitable",
+                     "http://www.theguardian.com/global-development",
+                     "http://www.theguardian.com/uk/business"
                     ]
   end
 

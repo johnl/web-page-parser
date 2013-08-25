@@ -1,6 +1,6 @@
 module WebPageParser
   class GuardianPageParserFactory < WebPageParser::ParserFactory
-    URL_RE = ORegexp.new("(www\.)?guardian\.co\.uk/[a-z-]+(/[a-z-]+)?/[0-9]{4}/[a-z]{3}/[0-9]{1,2}/[a-z-]{5,200}$")
+    URL_RE = ORegexp.new("(www\.)?(the)?guardian\.(co\.uk|com)/[a-z-]+(/[a-z-]+)?/[0-9]{4}/[a-z]{3}/[0-9]{1,2}/[a-z-]{5,200}$")
     INVALID_URL_RE = ORegexp.new("/cartoon/|/commentisfree/poll/|/video/[0-9]+|/gallery/[0-9]+|/poll/[0-9]+")
     def self.can_parse?(options)
       url = options[:url].split('#').first
