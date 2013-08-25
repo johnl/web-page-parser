@@ -56,7 +56,7 @@ describe WebPageParser::BaseRegexpParser do
   before :each do
     @valid_options = {
       :url => 'http://news.bbc.co.uk',
-      :page => "<html>\243</html>"
+      :page => "<html>£</html>"
     }
   end
 
@@ -75,7 +75,7 @@ describe WebPageParser::BaseRegexpParser do
     end
   end
 
-  it "should use convert from to utf8" do
+  it "should accept utf8" do
     wpp = WebPageParser::BaseRegexpParser.new(@valid_options)
     wpp.page.should == "<html>£</html>"
   end

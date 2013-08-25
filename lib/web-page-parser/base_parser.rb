@@ -3,7 +3,6 @@ module WebPageParser
   require 'digest'
   require 'date'
   require 'htmlentities'
-  require 'iconv'
 
   class RetrieveError < StandardError ; end
 
@@ -66,7 +65,6 @@ module WebPageParser
   class BaseRegexpParser < BaseParser
     include Oniguruma
 
-    ICONV = Iconv.new("utf-8", "iso-8859-1")
 
     # The regular expression to extract the title
     TITLE_RE = //
@@ -86,7 +84,12 @@ module WebPageParser
 
     def initialize(options = { })
       super(options)
-      @page = iconv(@page) if @page
+      @page = encode(@page)
+    end
+
+    # Handle any string encoding
+    def encode(s)
+      s
     end
 
     # return the page contents, retrieving it from the server if necessary
@@ -163,15 +166,6 @@ module WebPageParser
     # get the constant from this objects class
     def class_const(sym)
       self.class.const_get(sym)
-    end
-
-    # Convert the encoding of the given text if necessary
-    def iconv(s)
-      if class_const(:ICONV) and ICONV
-        class_const(:ICONV).iconv(s)
-      else
-        s
-      end
     end
 
     # Custom content parsing. It should split the @content up into an

@@ -14,7 +14,6 @@ module WebPageParser
 
   # NewYorkTimesPageParserV1 parses New York Times web pages
   class NewYorkTimesPageParserV1 < WebPageParser::BaseRegexpParser
-    ICONV = nil
     TITLE_RE = ORegexp.new('<nyt_headline [^>]*>(.*)</nyt_headline>', 'i')
     DATE_RE = ORegexp.new('<meta name="dat" content="(.*)"', 'i')
     CONTENT_RE = ORegexp.new('<nyt_text[^>]*>(.*)</nyt_text', 'mi')

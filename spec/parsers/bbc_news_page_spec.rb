@@ -54,6 +54,12 @@ end
 
 describe BbcNewsPageParserV5 do
 
+  describe "downloaded article with non-utf8" do
+    page = BbcNewsPageParserV5.new(:url => "http://news.bbc.co.uk/1/hi/uk_politics/7984711.stm")
+    page.hash.should_not == nil
+    page.hash.should_not == ""
+  end
+
   describe "Oscar Pistorius article" do
     it_should_behave_like AllPageParsers
     before do
