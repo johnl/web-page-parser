@@ -8,11 +8,11 @@ module WebPageParser
     end
     
     def self.create(options = {})
-      NewYorkTimesPageParserV1.new(options)
+      NewYorkTimesPageParserV2.new(options)
     end
   end
 
-  # NewYorkTimesPageParserV1 parses New York Times web pages
+  # NewYorkTimesPageParserV1 parses New York Times web pages up to January 2014
   class NewYorkTimesPageParserV1 < WebPageParser::BaseRegexpParser
     TITLE_RE = ORegexp.new('<nyt_headline [^>]*>(.*)</nyt_headline>', 'i')
     DATE_RE = ORegexp.new('<meta name="dat" content="(.*)"', 'i')
@@ -65,6 +65,44 @@ module WebPageParser
       @content = STRIP_TAGS_RE.gsub(@content, '')
       @content = @content.scan(PARA_RE).collect { |a| a[1] }
     end
-    
+
   end
+
+  # NewYorkTimesPageParserV2 parses New York Times web pages,
+  # including the new format change in Janurary 2014
+  class NewYorkTimesPageParserV2 < WebPageParser::BaseParser
+    require 'nokogiri'
+
+    def html_doc
+      @html_document ||= Nokogiri::HTML(page)
+    end
+
+    def title
+      @title ||= html_doc.css('h1[itemprop=headline]').text.strip
+    end
+
+    def content
+      return @content if @content
+      @content = []
+      story_body = html_doc.css('p.story-content')
+      if story_body.empty?
+        # old style
+        story_body = html_doc.css('p[itemprop=articleBody]')
+      end
+      story_body.each do |p|
+        @content << p.text.strip
+      end
+      @content
+    end
+
+    def date
+      return @date if @date
+      if date_meta = html_doc.at_css('meta[name=dat]')
+        @date = DateTime.parse(date_meta['content']) rescue nil
+      end
+      @date
+    end
+
+  end
+
 end
