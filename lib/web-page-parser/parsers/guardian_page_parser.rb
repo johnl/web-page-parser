@@ -41,6 +41,10 @@ module WebPageParser
       @content = STRIP_SCRIPTS_RE.gsub(@content, '')
       @content = @content.scan(PARA_RE).collect { |a| a[1] }
     end
+
+    def filter_url(url)
+      url.to_s.gsub("www.guprod.gnl", "www.guardian.co.uk") # some wierd guardian problem with some older articles
+    end
     
   end
 end

@@ -28,9 +28,11 @@ module WebPageParser
 
     # request the page from the server and return the raw contents
     def retrieve_page(rurl = nil)
-      return nil unless (rurl || url)
+      durl = rurl || url
+      return nil unless durl
+      durl = filter_url(durl) if self.respond_to?(:filter_url)
       self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
-      self.class.retrieve_session.get(rurl || url)
+      self.class.retrieve_session.get(durl)
     end
 
     def title
@@ -104,9 +106,11 @@ module WebPageParser
 
     # request the page from the server and return the raw contents
     def retrieve_page(rurl = nil)
-      return nil unless (rurl || url)
+      durl = rurl || url
+      return nil unless durl
+      durl = filter_url(durl) if self.respond_to?(:filter_url)
       self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
-      encode(self.class.retrieve_session.get(rurl || url))
+      encode(self.class.retrieve_session.get(durl))
     end
 
     # The title method returns the title of the web page.
