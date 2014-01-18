@@ -6,7 +6,7 @@ module WebPageParser
       return nil if INVALID_URL_RE.match(options[:url])
       URL_RE.match(options[:url])
     end
-    
+
     def self.create(options = {})
       IndependentPageParserV1.new(options)
     end
@@ -15,6 +15,13 @@ module WebPageParser
   # IndependentPageParserV1 parses Independent news web pages,
   class IndependentPageParserV1 < WebPageParser::BaseParser
     require 'nokogiri'
+
+    # Independent articles have a guid in the url (as of Jan 2014, a
+    # seven digit integer at the end of the url before the html extension)
+    def guid_from_url
+      # get the last large number from the url, if there is one
+      url.to_s.scan(/[0-9]{6,12}/).last
+    end
 
     def html_doc
       @html_document ||= Nokogiri::HTML(page)
