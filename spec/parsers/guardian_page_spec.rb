@@ -135,5 +135,94 @@ describe GuardianPageParserV1 do
       @pa.content.to_s.should_not =~ /explainerText/
     end
   end
+end
 
+describe GuardianPageParserV2 do
+
+  describe "when parsing the anger-grows article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/business/2012/jan/27/anger-grows-rbs-chiefs-bonus',
+        :page => File.read("spec/fixtures/guardian/anger-grows-rbs-chiefs-bonus.html"),
+        :valid_hash => '04108a9a7e3196da185e4d10432740a1'
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Anger grows over RBS chief's £900,000 bonus"
+    end
+   
+    it "should parse the date in UTC" do
+      @pa.date.should == DateTime.parse("Fri Jan 27 12:58:53 +0000 2012")
+      @pa.date.zone.should == '+00:00'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == "Ed Miliband and Boris Johnson have joined the chorus of criticism over the decision by the Royal Bank of Scotland to award its chief executive a bonus of nearly £1m."
+      @pa.content[7].should == 'Speaking from the World Economic Forum in Davos, Switzerland, Johnson described the bonus as "absolutely bewildering" and said it should have been blocked by ministers.'
+      @pa.content[38].should == '"Even to be considering this at a time when we are struggling to get our economies growing is quite simply madness," he told leaders in a speech to the World Economic Forum.'
+      @pa.content.last.should == "."
+      @pa.content.size.should == 40
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+  end
+
+  describe "when parsing the syria-libya-middle-east article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/world/middle-east-live/2011/jun/22/syria-libya-middle-east-unrest-live?INTCMP=ILCNETTXT3487',
+        :page => File.read("spec/fixtures/guardian/syria-libya-middle-east-unrest-live.html"),
+        :valid_hash => 'a2ed6d79e1fd834df80e2d603b36be22' # changed from V1 due to html stripping
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Bahrain, Syria and Middle East unrest - Wednesday 22 June 2011"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == "9.31am:Welcome to Middle East Live. There's so much happening across the region that it's difficult to know which stories to watch today. Here's a run down of the latest developments by country:"
+      @pa.content[1].should == "Bahrain"
+      @pa.content[6].should == "When I see children being killed, I must have misgivings. That's why I warned about the risk of civilian casualties... You can't have a decisive ending. Now is the time to do whatever we can to reach a political solution."
+      @pa.content.last.should == "(That's it from us today. Thanks for your comments)."
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+  end
+
+  describe "when parsing the barack obama-nicki-minaj article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/music/2012/oct/16/barack-obama-nicki-minaj-mariah-carey',
+        :page => File.read("spec/fixtures/guardian/barack-obama-nicki-minaj-mariah-carey.html"),
+        :valid_hash => '22fe55dc3664662ac6c1c79eac584754'
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should not include +explainerText+" do
+      @pa.hash.should == @valid_options[:valid_hash]
+      @pa.content.to_s.should_not =~ /explainerText/
+    end
+  end
+
+  describe "when parsing the anger-grows article with the explainerText javascript" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.guardian.co.uk/business/2012/jan/27/anger-grows-rbs-chiefs-bonus',
+        :page => File.read("spec/fixtures/guardian/anger-grows-rbs-chiefs-bonus-with-explainer.html"),
+        :valid_hash => '04108a9a7e3196da185e4d10432740a1'
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should have the same hash as before" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should not include +explainerText+" do
+      @pa.content.to_s.should_not =~ /explainerText/
+    end
+  end
 end
