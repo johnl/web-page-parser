@@ -225,4 +225,27 @@ describe GuardianPageParserV2 do
       @pa.content.to_s.should_not =~ /explainerText/
     end
   end
+
+  describe "when parsing the nhs-patient-data article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.theguardian.com/society/2014/jan/19/nhs-patient-data-available-companies-buy',
+        :page => File.read('spec/fixtures/guardian/nhs-patient-data-available-companies-buy.html'),
+        :valid_hash => '0ae4a335bfd96ee3345350814f1e9f97'
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'NHS patient data to be made available for sale to drug and insurance companies'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'Drug and insurance companies will from later this year be able to buy information on patients including mental health conditions and diseases such as cancer, as well as smoking and drinking habits, once a single English database of medical data has been created.'
+      @pa.content.last.should == 'A spokesperson said: "A phased rollout of care.data is being readied over a three month period with first extractions  from March allowing time for the HSCIC to assess the quality of the data and the linkage before making the data available. We think it would be wrong to exclude private companies simply on ideological grounds; instead, the test should be how the company wants to use the data to improve NHS care."'
+      @pa.content.size.should == 21
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+  end
+
 end
