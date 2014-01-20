@@ -60,4 +60,35 @@ describe WashingtonPostPageParserV1 do
     end
   end
 
+  describe 'when parsing the sgt bowe article' do
+    before do
+      @valid_options = { 
+        :url => 'http://www.washingtonpost.com/world/national-security/sgt-bowe-bergdahls-capture-remains-amystery/2014/01/15/4f8ef686-7e28-11e3-9556-4a4bf7bcbd84_story.html?wprss=rss_national-security',
+        :page => File.read('spec/fixtures/washingtonpost/sgt-bowe-bergdahls-capture-remains-amystery.html'),
+        :valid_hash => '1fd07efe6bfbf5c4551e88d09a663e25'
+      }
+      @pa = WashingtonPostPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Sgt. Bowe Bergdahl’s capture remains a mystery'
+    end
+
+    it 'should parse the date in UTC' do
+      @pa.date.should == DateTime.parse("January 15th 2014")
+      @pa.date.zone.should == '+00:00'
+    end
+
+    it "should contain no javascript" do
+      @pa.content.join(' ').should_not =~ /function/
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'Correction: An earlier version of this article misspelled the name of Sgt. Bowe Bergdahl.'
+      @pa.content.size.should == 8 # The blockquote ends up as one big paragraph
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+  end
+
 end

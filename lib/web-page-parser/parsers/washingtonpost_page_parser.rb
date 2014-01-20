@@ -23,9 +23,8 @@ module WebPageParser
       url.to_s.scan(/[a-f0-9-]{30,40}/).last
     end
 
-
     def html_doc
-      @html_document ||= Nokogiri::HTML(page)
+      @html_document ||= Nokogiri::HTML(page.gsub(/<script.*?<\/script>/m,''))
     end
 
     def title
@@ -35,7 +34,8 @@ module WebPageParser
     def content
       return @content if @content
       story_body = html_doc.css('div.article_body *').select do |e|
-        e.name == 'p'
+        next false if e.attributes['class'].to_s["pin-and-stack"]
+        e.name == 'p' or e.name == 'blockquote'
       end
       story_body.collect { |p| p = p.text.strip ; p.empty? ? nil : p }.compact
     end
