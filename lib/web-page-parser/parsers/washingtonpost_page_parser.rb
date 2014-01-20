@@ -16,6 +16,14 @@ module WebPageParser
   class WashingtonPostPageParserV1 < WebPageParser::BaseParser
     require 'nokogiri'
 
+    # WashPo articles have a guid in the url (as of Jan 2014, a
+    # uuid)
+    def guid_from_url
+      # get the last large number from the url, if there is one
+      url.to_s.scan(/[a-f0-9-]{30,40}/).last
+    end
+
+
     def html_doc
       @html_document ||= Nokogiri::HTML(page)
     end
