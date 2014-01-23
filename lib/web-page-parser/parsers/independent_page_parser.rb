@@ -33,12 +33,14 @@ module WebPageParser
 
     def content
       return @content if @content
-      @content = []
+      content = []
       story_body = html_doc.css('div.articleContent p')
       story_body.each do |p|
-        @content << p.text.strip
+        p.search('script,object').remove
+        p = p.text
+        content << p.strip.gsub(/\n+/,' ') if p
       end
-      @content
+      @content = content.select { |p| !p.empty? }
     end
 
     def date

@@ -67,7 +67,7 @@ describe IndependentPageParserV1 do
       @valid_options = { 
         :url => 'http://www.independent.co.uk/news/world/middle-east/innocent-starving-close-to-death-one-victim-of-the-siege-that-shames-syria-9065538.html',
         :page => File.read('spec/fixtures/independent/innocent-starving-close-to-death-one-victim-of-the-siege-that-shames-syria-9065538.html'),
-        :valid_hash => 'a6b366d9978f1fafdfc38a1a436030da'
+        :valid_hash => 'bb552f44352d9807bc0299e5d12f6f0e'
       }
       @pa = IndependentPageParserV1.new(@valid_options)
     end
@@ -91,5 +91,62 @@ describe IndependentPageParserV1 do
     end
   end
 
+  describe "when parsing the belgian-man article" do
+    before do
+      @valid_options = { 
+        :url => 'http://www.independent.co.uk/news/world/europe/belgian-man-who-skipped-100-restaurant-bills-is-killed-9081407.html',
+        :page => File.read('spec/fixtures/independent/belgian-man-who-skipped-100-restaurant-bills-is-killed-9081407.html'),
+        :valid_hash => '8e7ca0b6a3c3de210c743a36cea05990'
+      }
+      @pa = IndependentPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Belgian man who skipped 100 restaurant bills is killed'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse('Jan 23 2014')
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'He was a “happy-go-lucky” guy who was notorious for spicing up life on benefits in the medieval Belgian town of Ghent by strolling into a restaurant, calmly ordering lobster washed down with the finest brandy or some other gastronomic delight and then walking out without paying the bill.'
+      @pa.content[1].should == 'But, after 100 or so incidents spread over a five-year spree, Titus Clarysse has turned up dead, prompting police to launch an investigation of “murder or manslaughter”.'
+      @pa.content.size.should == 19
+    end
+  end
+
+  describe 'when parsing the uk-sanctuary article' do
+    before do
+      @valid_options = { 
+        :url => 'http://www.independent.co.uk/news/uk/politics/david-cameron-set-for-uturn-over-uk-sanctuary-for-most-vulnerable-syria-refugees-following-aid-agencies-plea-9077647.html',
+        :page => File.read('spec/fixtures/independent/david-cameron-set-for-uturn-over-uk-sanctuary-for-most-vulnerable-syria-refugees-following-aid-agencies-plea-9077647.html'),
+        :valid_hash => '37a6522307cea4fbae37b8eb52191c1d'
+      }
+      @pa = IndependentPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'David Cameron set for U-turn over UK sanctuary for most vulnerable Syria refugees following plea by aid agencies'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse('Jan 23 2014')
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'David Cameron opened the door yesterday for Britain to give sanctuary to some of the most vulnerable Syrian refugees trapped in appalling conditions in neighbouring countries.'
+      @pa.content.join(' ').should_not =~ /brightcove/
+      @pa.content.size.should == 16
+    end
+  end
 
 end
