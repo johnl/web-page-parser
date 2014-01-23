@@ -24,7 +24,7 @@ module WebPageParser
     end
 
     def html_doc
-      @html_document ||= Nokogiri::HTML(page.gsub(/<script.*?<\/script>/m,''))
+      @html_document ||= Nokogiri::HTML(page)
     end
 
     def title
@@ -37,7 +37,11 @@ module WebPageParser
         next false if e.attributes['class'].to_s["pin-and-stack"]
         e.name == 'p' or e.name == 'blockquote'
       end
-      story_body.collect { |p| p = p.text.strip ; p.empty? ? nil : p }.compact
+      story_body.collect! do |p| 
+        p.search('script,object').remove
+        p = p.text.strip
+      end
+      @content = story_body.select { |p| !p.empty? }
     end
 
     def date
