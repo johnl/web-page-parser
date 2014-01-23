@@ -124,7 +124,7 @@ describe IndependentPageParserV1 do
     before do
       @valid_options = { 
         :url => 'http://www.independent.co.uk/news/uk/politics/david-cameron-set-for-uturn-over-uk-sanctuary-for-most-vulnerable-syria-refugees-following-aid-agencies-plea-9077647.html',
-        :page => File.read('spec/fixtures/independent/david-cameron-set-for-uturn-over-uk-sanctuary-for-most-vulnerable-syria-refugees-following-aid-agencies-plea-9077647.html'),
+        :page => File.read('spec/fixtures/independent/david-cameron-set-for-uturn-over-uk-sanctuary-9077647.html'),
         :valid_hash => '37a6522307cea4fbae37b8eb52191c1d'
       }
       @pa = IndependentPageParserV1.new(@valid_options)
