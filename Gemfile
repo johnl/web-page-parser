@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "htmlentities", ">= 4.3.1"
 gem "rspec", '~>2.11.0'
 gem "rake"
-gem "curb", "0.8.5"
+gem "curb", "~>0.8.5"
 gem "nokogiri", "~> 1.6.1"
 
 platforms :ruby_18 do
