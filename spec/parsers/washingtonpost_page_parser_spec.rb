@@ -32,6 +32,26 @@ end
 
 describe WashingtonPostPageParserV1 do
 
+  describe 'when parsing the al-shabab article' do
+    before do
+      @valid_options = {
+                        :url => 'http://www.washingtonpost.com/world/national-security/pentagon-confirms-al-shabab-leader-killed-in-airstrike-in-somalia/2014/09/05/fc9fee06-3512-11e4-9e92-0899b306bbea_story.html',
+                        :page => File.read('spec/fixtures/washingtonpost/pentagon-confirms-al-shabab-leader-killed.html'),
+                        :valid_hash => 'FIXME'
+                       }
+      @pa = WashingtonPostPageParserV1.new(@valid_options)
+      
+    end
+
+    it 'should parse the title' do
+      @pa.title.should == 'White House confirms al-Shabab leader killed in airstrike in Somalia'
+    end
+
+    it 'should parse the content' do
+      @pa.content[0].should == 'In a major setback for al-Qaeda’s affiliate in East Africa, the Obama administration said Friday it had confirmed the death of a key Somali militant leader who had been targeted in an airstrike earlier in the week.'
+    end
+  end
+
   describe 'when parsing the bust-boom article' do
     before do
       @valid_options = { 
