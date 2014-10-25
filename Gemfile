@@ -1,8 +1,6 @@
 source "https://rubygems.org"
 
 gem "htmlentities", ">= 4.3.1"
-gem "rspec", '~>2.11.0'
-gem "rake"
 gem "curb", "~>0.8.5"
 gem "nokogiri", "~> 1.6.1"
 
@@ -12,7 +10,7 @@ platforms :ruby_18 do
 end
 
 group :development do
-  gem 'webmock', '~>1.8.9'
-  gem 'vcr', '~>2.2.4'
   gem 'rdoc'
+  gem "rspec", '~>2.11.0'
+  gem "rake"
 end

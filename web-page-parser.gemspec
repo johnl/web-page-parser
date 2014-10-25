@@ -18,6 +18,9 @@ Gem::Specification.new do |s|
 
 	s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
 
-  s.add_dependency("htmlentities", ">=4.0.0")
-  s.add_dependency("curb", ">=0.8")
+  s.add_dependency("htmlentities", "~> 4.3.1")
+  s.add_dependency("curb", "~> 0.8")
+  s.add_dependency("nokogiri", "~> 1.6")
+  s.add_development_dependency("rspec", "~> 2.11")
+  s.add_development_dependency("rake")
 end
