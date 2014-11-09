@@ -19,7 +19,7 @@ module WebPageParser
     # uuid)
     def guid_from_url
       # get the last large number from the url, if there is one
-      url.to_s.scan(/(https:\/\/firstlook.org\/theintercept\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[a-z0-9]+)/).last
+      url.to_s.scan(/https:\/\/firstlook.org\/theintercept\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[a-z0-9]+/).last
     end
 
     def html_doc
