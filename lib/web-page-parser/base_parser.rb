@@ -47,11 +47,12 @@ module WebPageParser
     def date
     end
 
+    def guid_from_url
+    end
+
     def guid
       return @guid if @guid
-      if self.url and self.respond_to? :guid_from_url
-        @guid = guid_from_url
-      end
+      @guid = guid_from_url if url
       @guid
     end
 
