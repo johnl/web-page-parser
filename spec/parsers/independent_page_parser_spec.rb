@@ -60,6 +60,10 @@ describe IndependentPageParserV1 do
       @pa.content[3].should == 'Many Saudi women have welcomed the freeze of the measure, including Sabria S. Jawhar, a Saudi columnist and assistant professor of applied linguistics at King Saud bin Abdulaziz University for Health Sciences.'
       @pa.content.size.should == 11
     end
+
+    it "should parse the guid" do
+      @pa.guid_from_url.should == '9065486'
+    end
   end
 
   describe "when parsing the syria article" do
