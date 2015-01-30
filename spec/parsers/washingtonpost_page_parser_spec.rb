@@ -50,6 +50,14 @@ describe WashingtonPostPageParserV1 do
     it 'should parse the content' do
       @pa.content[0].should == 'In a major setback for al-Qaeda’s affiliate in East Africa, the Obama administration said Friday it had confirmed the death of a key Somali militant leader who had been targeted in an airstrike earlier in the week.'
     end
+
+    it 'should get the guid from the url' do
+      @pa.guid_from_url.should == 'fc9fee06-3512-11e4-9e92-0899b306bbea'
+    end
+
+    it 'should return the guid from the url using the guid method' do
+      @pa.guid.should == 'fc9fee06-3512-11e4-9e92-0899b306bbea'
+    end
   end
 
   describe 'when parsing the bust-boom article' do

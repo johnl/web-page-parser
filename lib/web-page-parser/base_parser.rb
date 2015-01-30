@@ -12,13 +12,14 @@ module WebPageParser
       attr_accessor :retrieve_session
     end
 
-    attr_reader :url, :guid
+    attr_reader :url
 
     # takes a hash of options. The :url option passes the page url, and
     # the :page option passes the raw html page content for parsing
     def initialize(options = { })
       @url = options[:url]
       @page = options[:page]
+      @guid = options[:guid]
     end
 
     # return the page contents, retrieving it from the server if necessary
@@ -44,6 +45,15 @@ module WebPageParser
     end
 
     def date
+    end
+
+    def guid_from_url
+    end
+
+    def guid
+      return @guid if @guid
+      @guid = guid_from_url if url
+      @guid
     end
 
     # Return a hash representing the textual content of this web page

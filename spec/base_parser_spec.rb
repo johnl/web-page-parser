@@ -14,6 +14,16 @@ share_as :AllPageParsers do
     content.empty?.should be_true
   end
 
+  it "should use guid_from_url if available" do
+    class GuidTestPageParser < WebPageParser::BaseParser 
+      def guid_from_url
+        "guidfromurl"
+      end
+    end
+    GuidTestPageParser.new.guid.should == nil
+    GuidTestPageParser.new(:url => 'someurl').guid.should == 'guidfromurl'
+  end
+
   context "when hashing the content" do
     before :each do
       @wpp = WebPageParser::BaseParser.new(@valid_options)
