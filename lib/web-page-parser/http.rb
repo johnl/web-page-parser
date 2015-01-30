@@ -23,6 +23,7 @@ module WebPageParser
           c.dns_cache_timeout = 600
           c.enable_cookies = true
           c.follow_location = true
+          c.max_redirects = 6
           c.autoreferer = true
           c.headers["User-Agent"] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4'
           c.headers["Accept-encoding"] = 'gzip, deflate'
