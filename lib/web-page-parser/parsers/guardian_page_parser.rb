@@ -57,12 +57,12 @@ module WebPageParser
     end
 
     def title
-      @title ||= html_doc.css('div#main-article-info h1:first').text.strip
+      @title ||= html_doc.css('div#main-article-info h1:first, h1[itemprop=headline]').text.strip
     end
 
     def content
       return @content if @content
-      story_body = html_doc.css('div#article-body-blocks *').select do |e|
+      story_body = html_doc.css('div#article-body-blocks *, div[itemprop=articleBody] *').select do |e|
         e.name == 'p' or e.name == 'h2' or e.name == 'h3'
       end
       story_body.collect { |p| p.text.empty? ? nil : p.text.strip }.compact

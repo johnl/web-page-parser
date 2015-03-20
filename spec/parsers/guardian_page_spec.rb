@@ -226,26 +226,31 @@ describe GuardianPageParserV2 do
     end
   end
 
-  describe "when parsing the nhs-patient-data article" do
+  describe "when parsing the new format university extremist speakers article" do
     before do
       @valid_options = { 
-        :url => 'http://www.theguardian.com/society/2014/jan/19/nhs-patient-data-available-companies-buy',
-        :page => File.read('spec/fixtures/guardian/nhs-patient-data-available-companies-buy.html'),
-        :valid_hash => '0ae4a335bfd96ee3345350814f1e9f97'
+        :url => 'http://www.theguardian.com/uk-news/2015/mar/20/theresa-may-drops-rules-ordering-universities-ban-extremist-speakers',
+        :page => File.read("spec/fixtures/guardian/university-extremist-speakers.html"),
+        :valid_hash => 'aeeb32a7acd2de155be83fd7de6446cb'
       }
       @pa = GuardianPageParserV2.new(@valid_options)
     end
 
     it "should parse the title" do
-      @pa.title.should == 'NHS patient data to be made available for sale to drug and insurance companies'
+      @pa.title.should == "Theresa May drops rules on ordering universities to ban extremist speakers"
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should == DateTime.parse("Friday 20 March 2015 17:38:30 GMT")
+      @pa.date.zone.should == '+00:00'
     end
 
     it "should parse the content" do
-      @pa.content[0].should == 'Drug and insurance companies will from later this year be able to buy information on patients including mental health conditions and diseases such as cancer, as well as smoking and drinking habits, once a single English database of medical data has been created.'
-      @pa.content.last.should == 'A spokesperson said: "A phased rollout of care.data is being readied over a three month period with first extractions  from March allowing time for the HSCIC to assess the quality of the data and the linkage before making the data available. We think it would be wrong to exclude private companies simply on ideological grounds; instead, the test should be how the company wants to use the data to improve NHS care."'
-      @pa.content.size.should == 21
+      @pa.content[0].should == "The home secretary, Theresa May, has been forced to drop new statutory rules under which ministers could order universities and colleges to ban external extremist speakers."
+      @pa.content.size.should == 19
       @pa.hash.should == @valid_options[:valid_hash]
     end
+
   end
 
 end
