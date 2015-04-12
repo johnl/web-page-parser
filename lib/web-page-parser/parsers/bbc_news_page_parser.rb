@@ -2,7 +2,7 @@
 module WebPageParser
 
     class BbcNewsPageParserFactory < WebPageParser::ParserFactory
-      URL_RE = ORegexp.new("(www|news)\.bbc\.co\.uk/.+/([a-z-]+-)?[0-9]+(\.stm)?$")
+      URL_RE = ORegexp.new("(www|news)\.bbc\.co\.uk/.+/([a-z-]+-)?[0-9-]+(\.stm)?$")
       INVALID_URL_RE = ORegexp.new("in_pictures|pop_ups|sport1")
 
       def self.can_parse?(options)
@@ -148,9 +148,12 @@ module WebPageParser
 
       def title
         return @title if @title
-        @title = html_doc.css('h1.story-header').text.strip
+        @title = html_doc.css('h1.story-body__h1').text.strip
 
         # for older bbc articles
+        if @title.empty?
+          @title = html_doc.css('h1.story-header').text.strip
+        end
         if @title.empty?
           @title = html_doc.css('div#meta-information h1').text.strip
         end
@@ -168,7 +171,13 @@ module WebPageParser
       def content
         return @content if @content
         @content = []
-        story_body = html_doc.css('div.story-body')
+
+        story_body = html_doc.css('div.story-body > div.story-body__inner')
+
+        # Pre April 2015
+        if story_body.children.empty?
+          story_body = html_doc.css('div.story-body')
+        end
 
         # for older bbc articles
         if story_body.children.empty?
@@ -197,5 +206,46 @@ module WebPageParser
 
     end
 
+    class BbcNewsPageParserV6 < WebPageParser::BaseParser
+      require 'nokogiri'
+
+      def html_doc
+        @html_document ||= Nokogiri::HTML(page)
+      end
+
+      def title
+        @title ||= html_doc.css('h1.story-body__h1').text.strip
+      end
+
+      def content
+        return @content if @content
+        @content = []
+
+        story_body = html_doc.css('div.story-body > div.story-body__inner')
+
+        story_body.children.each do |n|
+          case n.name
+          when 'p', 'h2', 'h3'
+            @content << n.text.strip
+          when 'ul'
+            if n['class'] =~ /story-body/
+              n.css('li').each do |li|
+                @content << li.text.strip
+              end
+            end
+          end
+        end
+        @content
+      end
+
+      def date
+        return @date if @date
+        if date_meta = html_doc.at_css('meta[name=OriginalPublicationDate]')
+          @date = DateTime.parse(date_meta['content']) rescue nil
+        end
+        @date
+      end
+
+    end
 
 end

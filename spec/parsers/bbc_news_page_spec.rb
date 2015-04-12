@@ -16,7 +16,8 @@ describe BbcNewsPageParserFactory do
                    "http://news.bbc.co.uk/2/low/uk_news/england/devon/7996447.stm",
                    "http://www.bbc.co.uk/news/business-11125504",
                    "http://www.bbc.co.uk/news/10604897",
-                   "http://www.bbc.co.uk/news/world-middle-east-18229870#sa-ns_mchannel=rss&ns_source=PublicRSS20-sa"
+                   "http://www.bbc.co.uk/news/world-middle-east-18229870#sa-ns_mchannel=rss&ns_source=PublicRSS20-sa",
+                   "http://www.bbc.co.uk/news/election-2015-32271505"
                   ]
     @invalid_urls = [
                      "http://news.bbc.co.uk/2/hi/health/default.stm",
@@ -50,6 +51,57 @@ describe BbcNewsPageParserFactory do
   it "should ignore 'in pictures' articles" do
     BbcNewsPageParserFactory.can_parse?(:url => 'http://news.bbc.co.uk/1/hi/in_pictures/8039882.stm').should be_nil
   end
+end
+
+describe BbcNewsPageParserV6 do
+  describe "Inheritance tax plans article" do
+    before do
+      @valid_options = {
+        :url => 'http://www.bbc.co.uk/news/election-2015-32271505',
+        :page => File.read("spec/fixtures/bbc_news/32271505.html"),
+        :valid_hash => ''
+      }
+      @pa = BbcNewsPageParserV6.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Election 2015: Tory inheritance tax plan 'about values'"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == %q{Chancellor George Osborne has said Conservative plans to remove family homes worth up to £1m from inheritance tax "supports the basic human instinct to provide for your children".}
+      @pa.content.last.should == %q{However, when asked whether the Lib Dems would block the proposals if they ended up back in coalition, he declined to say he would, instead saying: "I'm saying I strongly disagree with it. Our priority... is further increases in the income tax personal allowance... we've stopped things in this parliament including cuts to inheritance tax for millionaires."}
+      @pa.content.size.should == 33
+      @pa.content[8].should == "Labour has been setting out plans to raise an extra £7.5bn a year through closing tax loopholes and imposing bigger fines on tax avoiders"
+    end
+  end
+
+  describe "Hilary Clinton article" do
+    before do
+      @valid_options = {
+        :url => 'http://www.bbc.co.uk/news/world-us-canada-32275608',
+        :page => File.read("spec/fixtures/bbc_news/32275608.html"),
+        :valid_hash => ''
+      }
+      @pa = BbcNewsPageParserV6.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Hillary Clinton to declare 2016 Democratic nomination bid"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == "Former US Secretary of State Hillary Clinton is expected to formally declare her run for the 2016 Democratic presidential nomination shortly."
+      @pa.content.last.should == "Mrs Clinton stood by her husband when he was exposed as having had an affair with a White House intern, Monica Lewinsky."
+      @pa.content.size.should == 21
+    end
+
+    it "should parse the headers in the content" do
+      @pa.content[5].should == "Analysis - Anthony Zurcher, BBC North America reporter, Washington DC"
+      @pa.content[11].should == "Is this Hillary Clinton's time?"
+    end
+  end
+
 end
 
 describe BbcNewsPageParserV5 do
@@ -241,6 +293,32 @@ describe BbcNewsPageParserV5 do
     @pa.content[2].should == 'Mr Alexander said the cuts were necessary to tackle the budget deficit and would be done in a "fair" way.'
   end
 
+  describe "Inheritance tax plans article" do
+    before do
+      @valid_options = {
+        :url => 'http://www.bbc.co.uk/news/election-2015-32271505',
+        :page => File.read("spec/fixtures/bbc_news/32271505.html"),
+        :valid_hash => ''
+      }
+      @pa = BbcNewsPageParserV5.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Election 2015: Tory inheritance tax plan 'about values'"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == %q{Chancellor George Osborne has said Conservative plans to remove family homes worth up to £1m from inheritance tax "supports the basic human instinct to provide for your children".}
+      @pa.content.last.should == %q{However, when asked whether the Lib Dems would block the proposals if they ended up back in coalition, he declined to say he would, instead saying: "I'm saying I strongly disagree with it. Our priority... is further increases in the income tax personal allowance... we've stopped things in this parliament including cuts to inheritance tax for millionaires."}
+      @pa.content.size.should == 29
+    end
+  end
+
+  it "should retrieve the article from the bbc website" do
+    @pa = BbcNewsPageParserV5.new(:url => "http://www.bbc.co.uk/news/business-11125504")
+    @pa.title.should == "UK economy 'to pick up in near term'"
+  end
+
 end
 
 describe BbcNewsPageParserV4 do
@@ -275,11 +353,6 @@ describe BbcNewsPageParserV4 do
   it "should ignore embedded-hyper content" do
     @pa = BbcNewsPageParserV4.new(:page => File.read('spec/fixtures/bbc_news/12921632.html'))
     @pa.content.to_s.should_not =~ /Fake and real quotes/
-  end
-
-  it "should retrieve the article from the bbc website" do
-    @pa = BbcNewsPageParserV4.new(:url => @valid_options[:url])
-    @pa.title.should == "UK economy 'to pick up in near term'"
   end
 
   it "should ignore the twitter widget" do
