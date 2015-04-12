@@ -59,13 +59,17 @@ describe BbcNewsPageParserV6 do
       @valid_options = {
         :url => 'http://www.bbc.co.uk/news/election-2015-32271505',
         :page => File.read("spec/fixtures/bbc_news/32271505.html"),
-        :valid_hash => ''
+        :valid_hash => 'a2d1c84cc980c3991c2e57d1cd6aca5f'
       }
       @pa = BbcNewsPageParserV6.new(@valid_options)
     end
 
     it "should parse the title" do
       @pa.title.should == "Election 2015: Tory inheritance tax plan 'about values'"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should == @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
@@ -81,13 +85,17 @@ describe BbcNewsPageParserV6 do
       @valid_options = {
         :url => 'http://www.bbc.co.uk/news/world-us-canada-32275608',
         :page => File.read("spec/fixtures/bbc_news/32275608.html"),
-        :valid_hash => ''
+        :valid_hash => '09c6d4d91276eda57bc6cfc974220c88'
       }
       @pa = BbcNewsPageParserV6.new(@valid_options)
     end
 
     it "should parse the title" do
       @pa.title.should == "Hillary Clinton to declare 2016 Democratic nomination bid"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should == @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
@@ -118,13 +126,17 @@ describe BbcNewsPageParserV5 do
       @valid_options = {
         :url => 'http://www.bbc.co.uk/news/world-africa-21528631',
         :page => File.read("spec/fixtures/bbc_news/21528631.html"),
-        :valid_hash => ''
+        :valid_hash => '38ef9fc2bbaa5a023a3ada53398b7d95'
       }
       @pa = BbcNewsPageParserV5.new(@valid_options)
     end
 
     it "should parse the title" do
       @pa.title.should == "Oscar Pistorius detective on attempted murder charges"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should == @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
@@ -152,13 +164,17 @@ describe BbcNewsPageParserV5 do
       @valid_options = { 
         :url => 'http://www.bbc.co.uk/news/business-11125504',
         :page => File.read("spec/fixtures/bbc_news/11125504.html"),
-        :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
+        :valid_hash => '55d67e013759012f25eea1521bbe962f'
       }
       @pa = BbcNewsPageParserV5.new(@valid_options)
     end
 
     it "should parse the title" do
       @pa.title.should == "UK economy 'to pick up in near term'"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should == @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
@@ -268,7 +284,7 @@ describe BbcNewsPageParserV5 do
       @valid_options = {
         :url => 'http://news.bbc.co.uk/1/hi/northern_ireland/8040164.stm',
         :page => File.read("spec/fixtures/bbc_news/8040164.stm.html"),
-        :valid_hash => ''
+        :valid_hash => 'f2a9ea3dbc8af5065cd8f70d13e35c08'
       }
       @pa = BbcNewsPageParserV5.new(@valid_options)
     end
@@ -279,6 +295,10 @@ describe BbcNewsPageParserV5 do
 
     it "should convert iso-8859-1 in the content to utf8" do
       @pa.content.first.should =~ /£100,000/
+    end
+
+    it "should calculate a valid hash of the content" do
+      @pa.hash.should == @valid_options[:valid_hash]
     end
 
   end
@@ -328,9 +348,13 @@ describe BbcNewsPageParserV4 do
     @valid_options = {
       :url => 'http://www.bbc.co.uk/news/business-11125504',
       :page => File.read("spec/fixtures/bbc_news/11125504.html"),
-      :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
+      :valid_hash => '55d67e013759012f25eea1521bbe962f'
     }
     @pa = BbcNewsPageParserV4.new(@valid_options)
+  end
+
+  it "should calculate a valid hash of the content" do
+    @pa.hash.should == @valid_options[:valid_hash]
   end
 
   it "should parse the title" do
@@ -385,9 +409,13 @@ describe BbcNewsPageParserV3 do
     @valid_options = { 
       :url => 'http://news.bbc.co.uk/1/hi/england/10249066.stm',
       :page => File.read("spec/fixtures/bbc_news/10249066.stm.html"),
-      :valid_hash => 'd9e201abec3f4b9e38865b5135281978'
+      :valid_hash => '764a7db03feb91c66a37d7680e89ee0b'
     }
     @pa = BbcNewsPageParserV3.new(@valid_options)
+  end
+
+  it "should calculate a valid hash of the content" do
+    @pa.hash.should == @valid_options[:valid_hash]
   end
 
   it "should parse the content" do
@@ -478,6 +506,10 @@ describe BbcNewsPageParserV1 do
       :valid_hash => 'aaf7ed1219eb69c3126ea5d0774fbe7d'
     }
     @pa = BbcNewsPageParserV1.new(@valid_options)
+  end
+
+  it "should calculate a valid hash of the content" do
+    @pa.hash.should == @valid_options[:valid_hash]
   end
 
   it "should parse the title" do
