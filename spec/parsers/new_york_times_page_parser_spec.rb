@@ -154,32 +154,33 @@ describe NewYorkTimesPageParserV2 do
 
   describe "retrieve_page" do
     it "should retrieve the article from the nyt website" do
-      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/22/us/politics/ignoring-calls-to-quit-akin-appeals-to-voters-in-ad.html?hp")
+      @pa = NewYorkTimesPageParserV2.new(:url => "http://www.nytimes.com/2012/08/22/us/politics/ignoring-calls-to-quit-akin-appeals-to-voters-in-ad.html?hp")
       @pa.title.should =~ /ignoring/i
     end
 
     it "should retrieve the full article from the nyt website when given a first page url" do
-      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html?ref=world")
+      @pa = NewYorkTimesPageParserV2.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html?ref=world")
       @pa.content.size.should > 40
-      @pa = NewYorkTimesPageParserV1.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html")
+      @pa = NewYorkTimesPageParserV2.new(:url => "http://www.nytimes.com/2012/08/21/world/middleeast/syrian-rebels-coalesce-into-a-fighting-force.html")
       @pa.content.size.should > 40
     end
 
     it "should retrieve more than the paywall url limit" do
       urls = []
       [
-       "http://feeds.nytimes.com/nyt/rss/HomePage",
+       "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
        "http://rss.nytimes.com/services/xml/rss/nyt/GlobalHome.xml",
-       "http://feeds.nytimes.com/nyt/rss/NYRegion",
+       "http://rss.nytimes.com/services/xml/rss/nyt/NYRegion.xml",
        "http://www.nytimes.com/services/xml/rss/nyt/World.xml"
       ].each do |fu|
+        next if urls.size > 25
         urls += Net::HTTP.get(URI(fu)).scan(/http:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
+        urls.uniq!
       end
 
-      urls.uniq!
-      pending("Failing spec but works in practise. Needs a looksee.") { urls.size.should > 25 }
+      urls.size.should > 25
       urls[0..24].each_with_index do |u,i|
-        @pa = NewYorkTimesPageParserV1.new(:url => u)
+        @pa = NewYorkTimesPageParserV2.new(:url => u)
         @pa.page.curl.header_str.to_s.scan(/^Location: .*/).grep(/myaccount.nytimes.com/).should be_empty
         @pa.title.should_not =~ /^Log In/
       end
