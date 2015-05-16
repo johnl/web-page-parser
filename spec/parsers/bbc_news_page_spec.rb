@@ -120,6 +120,22 @@ describe BbcNewsPageParserV5 do
     page.hash.should_not == ""
   end
 
+  describe "China media article" do
+    before do
+      @valid_options = {
+        :url => 'http://www.bbc.co.uk/news/world-asia-china-31014941',
+        :page => File.read("spec/fixtures/bbc_news/31014941.html")
+      }
+      @pa = BbcNewsPageParserV5.new(@valid_options)
+    end
+
+    it "should parse without erroring" do
+      @pa.title.should == "China media: Military might"
+      @pa.content.size.should > 0
+    end
+  end
+
+
   describe "Oscar Pistorius article" do
     it_should_behave_like AllPageParsers
     before do

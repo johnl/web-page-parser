@@ -194,7 +194,7 @@ module WebPageParser
           # Pre-April 2015 headings
           @content << n.text.strip if n.name == 'span' and n['class'].include? 'cross-head'
           # Post April 2015 headings
-          @content << n.next.strip if n.name == 'h2' and n['class'].to_s =~ /crosshead/
+          @content << n.text.strip if n.name == 'h2' and n['class'].to_s =~ /crosshead/
         end
         @content
       end
