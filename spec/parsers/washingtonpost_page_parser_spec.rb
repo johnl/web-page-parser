@@ -6,7 +6,8 @@ describe WashingtonPostPageParserFactory do
   before do
     @valid_urls = [
                    'http://www.washingtonpost.com/world/will-a-bust-follow-the-boom-in-britain/2014/01/18/3677a6ae-7f9d-11e3-97d3-b9925ce2c57b_story.html?tid=hpModule_04941f10-8a79-11e2-98d9-3012c1cd8d1e&hpid=z16',
-                   'http://www.washingtonpost.com/business/technology/nsa-program-defenders-question-snowdens-motives/2014/01/19/091fccaa-811d-11e3-bbe5-6a2a3141e3a9_story.html'
+                   'http://www.washingtonpost.com/business/technology/nsa-program-defenders-question-snowdens-motives/2014/01/19/091fccaa-811d-11e3-bbe5-6a2a3141e3a9_story.html',
+                   'https://www.washingtonpost.com/world/middle_east/israel-ambassador-to-us-sends-anti-boycott-message-with-gift/2015/12/23/652d639c-a99b-11e5-b596-113f59ee069a_story.html'
                   ]
     @invalid_urls = [
                      'http://www.washingtonpost.com/politics/',
@@ -118,5 +119,37 @@ describe WashingtonPostPageParserV1 do
     end
 
   end
+
+  describe 'when parsing the Israeli ambassador article' do
+    before do
+      @valid_options = {
+        :url => 'https://www.washingtonpost.com/world/middle_east/israel-ambassador-to-us-sends-anti-boycott-message-with-gift/2015/12/23/652d639c-a99b-11e5-b596-113f59ee069a_story.html',
+        :page => File.read('spec/fixtures/washingtonpost/israeli-ambassador.html'),
+        :valid_hash => 'c2e80bf1012949bf3a124576466b1b40'
+      }
+      @pa = WashingtonPostPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Israel ambassador to US sends anti-boycott message with gift'
+    end
+
+    it 'should parse the date in UTC' do
+      @pa.date.should == DateTime.parse("December 23")
+      @pa.date.zone.should == '+00:00'
+    end
+
+    it "should contain no javascript" do
+      @pa.content.join(' ').should_not =~ /function/
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'JERUSALEM — Israel’s ambassador to the United States has dispatched a politically charged holiday gift.'
+      @pa.content.size.should == 6
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+  end
+
 
 end

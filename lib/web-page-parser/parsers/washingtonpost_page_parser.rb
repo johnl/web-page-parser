@@ -33,7 +33,7 @@ module WebPageParser
 
     def content
       return @content if @content
-      story_body = html_doc.css('div.article_body *,div#main-content article *').select do |e|
+      story_body = html_doc.css('div.article_body *,div#main-content article *,article[itemprop="articleBody"] *').select do |e|
         next false if e.attributes['class'].to_s["pin-and-stack"]
         e.name == 'p' or e.name == 'blockquote'
       end
