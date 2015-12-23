@@ -64,4 +64,34 @@ describe TheInterceptPageParserV1 do
 
   end
 
+  describe 'when parsing the pentagon missionary article' do
+    before do
+      @valid_options = {
+                        :url => 'https://theintercept.com/2015/10/26/pentagon-missionary-spies-christian-ngo-front-for-north-korea-espionage/',
+                        :page => File.read('spec/fixtures/theintercept/pentagon-missionary.html'),
+                        :valid_hash => 'aa8a59955cc0c783f782c5c13701c71d'
+                       }
+      @pa = TheInterceptPageParserV1.new(@valid_options)
+    end
+
+    it 'should parse the title' do
+      @pa.title.should == "U.S. Military Used Christian NGO as Front for North Korea Espionage"
+    end
+
+    it 'should parse the content' do
+      @pa.content[0].should == 'ON MAY 10, 2007, in the East Room of the White House, President George W. Bush presided over a ceremony honoring the nation’s most accomplished community service leaders. Among those collecting a President’s Volunteer Service Award that afternoon was Kay Hiramine, the Colorado-based founder of a multimillion-dollar humanitarian organization.'
+       @pa.content[13].should == 'HISG WAS ESTABLISHED shortly after 9/11, when Hiramine led a group of three friends in creating a humanitarian organization that they hoped could provide disaster relief and sustainable development in poor and war-torn countries around the world, according to the organization’s incorporation documents.'
+       @pa.content[83].should == 'This report makes reference to a donation from Working Partners Foundation to Catholic Relief Services, based on Working Partners Foundation’s tax filings. Catholic Relief Services, which conducted a review after publication, said its own records contained no indication it received money from Working Partners Foundation or HISG.'
+       @pa.content.last.should == 'Top photo: U.S. President George W. Bush with Kay Hiramine prior to presenting him with a President’s Volunteer Service Award on May 10, 2007, in the East Room of the White House (photo flipped). '
+       @pa.content.size.should == 86
+       @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it 'should parse the date in UTC' do
+      @pa.date.should == DateTime.parse('Oct. 26 2015 15:05:22')
+      @pa.date.zone.should == '+00:00'
+    end
+
+  end
+
 end

@@ -42,7 +42,7 @@ module WebPageParser
 
     def content
       return @content if @content
-      story_body = html_doc.css('article div.ti-body p').collect do |p|
+      story_body = html_doc.css('div.PostContent div p, article div.ti-body p').collect do |p|
         p.text.strip.gsub(160.chr(Encoding::UTF_8), ' ') # convert &nbsp; to actual space
       end
       @content = story_body.select { |p| !p.empty? }
@@ -52,6 +52,11 @@ module WebPageParser
       return @date if @date
       if date_meta = html_doc.at_css('meta[property="article:published_time"]')
         date_string = date_meta['content'].scan(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}/).first
+        @date = DateTime.parse(date_string) rescue nil
+      end
+      return @date if @date
+      if date_span = html_doc.css('span.PostByline-date')
+        date_string = date_span.text.strip
         @date = DateTime.parse(date_string) rescue nil
       end
       return @date if @date
