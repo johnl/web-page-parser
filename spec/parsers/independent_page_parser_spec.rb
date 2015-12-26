@@ -153,4 +153,32 @@ describe IndependentPageParserV1 do
     end
   end
 
+  describe 'when parsing the lord-burns article' do
+    before do
+      @valid_options = { 
+        :url => 'http://www.independent.co.uk/news/media/lord-burns-channel-4-chairman-forced-to-step-down-by-ministers-amid-privatisation-fears-a6670691.html',
+        :page => File.read('spec/fixtures/independent/lord-burns.html'),
+        :valid_hash => 'f0efb3b2ea91266fe4a551867fcf6fb1'
+      }
+      @pa = IndependentPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Lord Burns: Channel 4 chairman forced to step down by ministers amid privatisation fears'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse('28 September 2015 18:03:52 BST')
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'Ministers have forced Lord Burns, the chairman of Channel 4, to step down, fuelling speculation that the not-for-profit broadcaster is being prepared for privatisation.'
+      @pa.content.size.should == 6
+    end
+  end
+
 end

@@ -28,13 +28,13 @@ module WebPageParser
     end
 
     def title
-      @title ||= html_doc.css('div#main h1.title').text.strip
+      @title ||= html_doc.css('div#main h1.title,article h1[itemprop="headline"]').text.strip
     end
 
     def content
       return @content if @content
       content = []
-      story_body = html_doc.css('div.articleContent p')
+      story_body = html_doc.css('div.articleContent p,div[itemprop="articleBody"] p')
       story_body.each do |p|
         p.search('script,object').remove
         p = p.text
