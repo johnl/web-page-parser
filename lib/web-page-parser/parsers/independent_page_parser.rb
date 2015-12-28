@@ -34,7 +34,7 @@ module WebPageParser
     def content
       return @content if @content
       content = []
-      story_body = html_doc.css('div.articleContent p,div[itemprop="articleBody"] p')
+      story_body = html_doc.css('div.articleContent p,div[itemprop="articleBody"] > p')
       story_body.each do |p|
         p.search('script,object').remove
         p = p.text

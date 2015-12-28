@@ -181,4 +181,28 @@ describe IndependentPageParserV1 do
     end
   end
 
+  describe 'when parsing the boris-johnson article' do
+    before do
+      @valid_options = {
+        :url => 'http://www.independent.co.uk/news/uk/politics/boris-johnson-warns-low-immigration-could-stall-economic-growth-a6693486.html',
+        :page => File.read('spec/fixtures/independent/boris-johnson.html'),
+        :valid_hash => 'e9fc5ef9502d3b167c00d5cefb308495'
+      }
+      @pa = IndependentPageParserV1.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Boris Johnson warns low immigration could stall economic growth'
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should exclude the 'read more' and image widget captions" do
+      @pa.content.to_s.should_not =~ /Farage says/
+      @pa.content.to_s.should_not =~ /A butcher/
+    end
+  end
+
 end
