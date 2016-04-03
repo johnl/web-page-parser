@@ -135,7 +135,7 @@ describe WashingtonPostPageParserV1 do
     end
 
     it 'should parse the date in UTC' do
-      @pa.date.should == DateTime.parse("December 23")
+      @pa.date.should == DateTime.parse("December 23 2015")
       @pa.date.zone.should == '+00:00'
     end
 
