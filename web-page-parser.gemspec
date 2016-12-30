@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
   s.name    = 'web-page-parser'
-  s.version = '1.1.2'
+  s.version = '1.2.0'
   s.date    = '2016-12-30'
   s.licenses = ['MIT']
   
   s.summary = "A parser for various news organisation's web pages"
-  s.description = "A Ruby library to parse the content out of web pages. Currently supports BBC News pages, The Guardian, Independent, New York Times, Washington Post and The Intercept articles. Used by the News Sniffer project. https://www.newssniffer.co.uk"
+  s.description = "A Ruby library to parse the content out of web pages. Currently supports BBC News pages, The Guardian, Independent, New York Times, RT, Washington Post and The Intercept articles. Used by the News Sniffer project. https://www.newssniffer.co.uk"
   
   s.authors  = ['John Leach']
   s.email    = 'john@johnleach.co.uk'
