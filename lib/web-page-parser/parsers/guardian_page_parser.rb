@@ -57,7 +57,11 @@ module WebPageParser
     end
 
     def title
-      @title ||= html_doc.css('div#main-article-info h1:first, h1[itemprop=headline]').text.strip
+      return @title if @title
+      @title = html_doc.css('h1[itemprop=headline]').text.strip
+      @title = html_doc.css('div#main-article-info h1:first').text.strip if @title.empty?
+      @title = html_doc.css('title').text.split('|').first.strip if @title.empty?
+      @title
     end
 
     def content
