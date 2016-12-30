@@ -9,7 +9,7 @@ module WebPageParser
     end
 
     def self.create(options = {})
-      GuardianPageParserV2.new(options)
+      GuardianPageParserV3.new(options)
     end
   end
 
@@ -83,6 +83,22 @@ module WebPageParser
     def filter_url(url)
       # some wierd guardian problem with some older articles
       url.to_s.gsub("www.guprod.gnl", "www.guardian.co.uk") 
+    end
+  end
+
+  class GuardianPageParserV3 < GuardianPageParserV2
+    def content
+      return @content if @content
+      story_body = html_doc.css('div#article-body-blocks *, div[itemprop=articleBody] *').select do |e|
+        e.name == 'p' or e.name == 'h2' or e.name == 'h3' or e.name == 'ul'
+      end
+      story_body.collect do |p|
+        if p.name == 'ul'
+          p.css('li').collect { |li| li.text.empty? ? nil : li.text.strip }
+        else
+          p.text.empty? ? nil : p.text.strip
+        end
+      end.flatten.compact
     end
   end
 

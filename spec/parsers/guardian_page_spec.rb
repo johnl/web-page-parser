@@ -275,4 +275,63 @@ describe GuardianPageParserV2 do
 
   end
 
+  describe "when parsing the Julian Assange article" do
+    before do
+      @valid_options = {
+        :url => 'https://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview',
+        :page => File.read("spec/fixtures/guardian/julian-assange-donald-trump-hillary-clinton-interview.html"),
+        :valid_hash => '2757835e9e028a21b5e47c9199ade005'
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Julian Assange gives guarded praise of Trump and blasts Clinton in interview"
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should == DateTime.parse("Saturday 24 December 2016 18:36:24 GMT")
+      @pa.date.zone.should == '+00:00'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == "Julian Assange, the founder of WikiLeaks, has offered guarded praise of Donald Trump, arguing the president-elect “is not a DC insider” and could mean an opportunity for positive as well as negative change in the US."
+      @pa.content.last.should == "Dozens of journalists have been killed in Russia in the past two decades, and Freedom House considers the Russian press to be “not free” and notes: “The main national news agenda is firmly controlled by the Kremlin. The government sets editorial policy at state-owned television stations, which dominate the media landscape and generate propagandistic content.”"
+      @pa.content.size.should == 16
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+  end
+
+  describe GuardianPageParserV3 do
+    describe "when parsing the Julian Assange article" do
+    before do
+      @valid_options = {
+        :url => 'https://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview',
+        :page => File.read("spec/fixtures/guardian/julian-assange-donald-trump-hillary-clinton-interview.html"),
+        :valid_hash => 'a94b1cfb7abab286ab4e880e3c440d66'
+      }
+      @pa = GuardianPageParserV3.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == "Julian Assange gives guarded praise of Trump and blasts Clinton in interview"
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should == DateTime.parse("Saturday 24 December 2016 18:36:24 GMT")
+      @pa.date.zone.should == '+00:00'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == "Julian Assange, the founder of WikiLeaks, has offered guarded praise of Donald Trump, arguing the president-elect “is not a DC insider” and could mean an opportunity for positive as well as negative change in the US."
+      @pa.content.last.should == "This article was amended on 29 December 2016 to remove a sentence in which it was asserted that Assange “has long had a close relationship with the Putin regime”. A sentence was also amended which paraphrased the interview, suggesting Assange said “there was no need for Wikileaks to undertake a whistleblowing role in Russia because of the open and competitive debate he claimed exists there”. It has been amended to more directly describe the question Assange was responding to when he spoke of Russia’s “many vibrant publications”."
+      @pa.content.size.should == 17
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+  end
+
+  end
+
 end
