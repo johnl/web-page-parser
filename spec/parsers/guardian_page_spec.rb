@@ -300,6 +300,20 @@ describe GuardianPageParserV2 do
       @pa.content.size.should == 16
       @pa.hash.should == @valid_options[:valid_hash]
     end
+  end
+
+  describe "when parsing an article with duplicate headlines" do
+    before do
+      @valid_options = {
+        :url => 'https://www.theguardian.com/world/2016/dec/31/russia-syria-ceasefire-un-security-council-damascus-kazakhstan',
+        :page => File.read("spec/fixtures/guardian/duplicate-headline.html"),
+      }
+      @pa = GuardianPageParserV2.new(@valid_options)
+    end
+
+    it "should only return one of the titles" do
+      @pa.title.should == "Russia pushes for UN security council support for Syria ceasefire"
+    end
 
   end
 

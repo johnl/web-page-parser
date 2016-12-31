@@ -56,11 +56,21 @@ module WebPageParser
       @html_document ||= Nokogiri::HTML(page)
     end
 
+    def css_first_text(top_e, *selectors)
+      selectors.each do |s|
+        top_e.css(s).each do |e|
+          next if e.nil?
+          text = e.text.strip
+          return text unless text.empty?
+        end
+      end
+      nil
+    end
+
     def title
       return @title if @title
-      @title = html_doc.css('h1[itemprop=headline]').text.strip
-      @title = html_doc.css('div#main-article-info h1:first').text.strip if @title.empty?
-      @title = html_doc.css('title').text.split('|').first.strip if @title.empty?
+      @title = css_first_text(html_doc, 'h1[itemprop=headline]', 'div#main-article-info h1:first')
+      @title = html_doc.css('title').text.split('|').first.strip if @title.nil?
       @title
     end
 
