@@ -1,35 +1,49 @@
 = Web Page Parser
 
-Web Page Parser is a Ruby library to parse the content out of web
-pages, such as BBC News pages. It strips all non-textual stuff out,
-leaving the title, publication date and an array of paragraphs.  It
-makes heavy use of regular expressions, rather than actually parsing
-the HTML. This may sound a bit whacky, but BBC News html in particular
-has semantic markup *within comments*, which cannot easily be
-referenced with standard HTML parsing.  Regular expressions are much
-faster than full HTML parsing too.
+Web Page Parser is a Ruby library to parse the content out of certain web pages, such as BBC News pages. It strips all non-textual stuff out, leaving the title, publication date and an array of paragraphs.
 
+Web Page Parser used to make heavy use of regular expressions, rather than actually parsing the HTML. This may sound a bit whacky, but BBC News HTML in particular had semantic markup *within comments*, which could not easily be referenced with standard HTML parsing. But the early wild west days of using Web Page Parser (back in 2009!) are over and news web page formatting has improved a lot and most of the parsers now use standard HTML parsing.
 
-Web Page Parser currently supports BBC News pages and Guardian news
-articles but new parsers are planned and can be added easily.
+Web Page Parser currently supports BBC News, Independent, New York Times, Washington Post and Guardian news articles but new parsers are planned and can be added easily.
 
-It is used by the {News Sniffer}[http://www.newssniffer.co.uk]
-project, which parses and archives news articles to keep track of how
-they change.
+== News Sniffer
+
+Web Page Parser is primarily used by the {News Sniffer}[http://www.newssniffer.co.uk] project, which parses and archives news articles to keep track of how they change. This has heavily influenced the design of Web Page Parser.
+
+News Sniffer requires that an update to a parser doesn't cause a false change to be detected in the backlog of tracked articles. Web Page Parser caters to this by supporting multiple versions of each parser.
+
+So whenever a parser has to be changed, say, to support a new design, or to remove some useless non-textual widget, the existing parser is not touched and a new version is added. The new version will often inherit most of the behaviour of the previous version and just add the new filters or tweaks necessary.
+
+So, for example, the BBC often change their design for new articles but their old articles can stay using the same old design. Web Page Parser's BBC parser still supports the older article formats without changing the resulting parsed content at all.
+
+Web Page Parser will always use the latest version of each parser by default (using the url to detect which parser to use), but you can specifically require any particular version. News Sniffer keeps track of which parser version was used for each article to it can ensure it uses the same one from then on.
+
 
 == Example usage
 
   require 'web-page-parser'
-  require 'open-uri'
 
   url = "http://news.bbc.co.uk/1/hi/uk/8041972.stm"
-  page_data = open(url).read
 
-  page = WebPageParser::ParserFactory.parser_for(:url => url, :page => page_data)
+  page = WebPageParser::ParserFactory.parser_for(:url => url)
 
   puts page.title # MPs hit back over expenses claims
   puts page.date # 2009-05-09T18:58:59+00:00
   puts page.content.first # The wife of author Ken Follett and ...
+
+== Or specify a particular parser
+
+  url = "http://www.theguardian.com/world/2014/oct/24/kurds-fear-isis-chemical-weapon-kobani"
+
+  page = WebPageParser::GuardianPageParserV1.new(:url => url)
+
+  puts page.title # Barack Obama declares Iraq war a success
+
+
+== Ruby 1.8 support
+
+Installing the Oniguruma gem on Ruby 1.8 will make Web Page Parser run
+faster, it's highly recommended but not required.
 
 == More Info
 
@@ -37,5 +51,5 @@ Web Page Parser was written by {John Leach}[http://johnleach.co.uk]
 and is released under the MIT License.
 
 The code is available on
-{github}[http://github.com/johnl/web-page-parser/tree/master].
+{github}[http://github.com/johnl/web-page-parser].
 

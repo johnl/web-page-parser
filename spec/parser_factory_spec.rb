@@ -1,11 +1,11 @@
-$:.unshift File.join(File.dirname(__FILE__), '../lib')
-require 'web-page-parser'
+require 'spec_helper'
 include WebPageParser
 
 describe ParserFactory do
 
   it "should load parsers in the parsers directory" do
-    ParserFactory.factories.first.to_s.should == "TestPageParserFactory"
+    pfl = ParserFactory.factories.collect { |f| f.to_s }
+    pfl.should include "TestPageParserFactory"
   end
 
   it "should provide the right PageParser for the given url" do

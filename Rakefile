@@ -1,6 +1,9 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+begin
+  require 'rdoc/task'
+rescue LoadError
+end
 require 'rspec/core/rake_task'
 
 desc "Run all specs"
