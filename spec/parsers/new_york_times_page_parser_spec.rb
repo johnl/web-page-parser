@@ -8,10 +8,14 @@ describe NewYorkTimesPageParserFactory do
     @valid_urls = [
                    "http://www.nytimes.com/2012/01/28/us/politics/no-more-nice-guys-fans-love-nuclear-newt.html?_r=1&ref=us",
                    "http://www.nytimes.com/2012/01/29/business/global/greece-in-talks-with-creditors-on-debt-deal.html",
+                   "https://www.nytimes.com/2014/01/12/world/europe/show-banned-french-comedian-has-new-one.html",
+                   "https://www.nytimes.com/2018/06/12/world/asia/trump-kim-policy.html?hp&action=click&pgtype=Homepage&clickSource=story-heading&module=span-ab-top-region&region=top-news&WT.nav=top-news"
                   ]
     @invalid_urls = [
                      "http://cityroom.blogs.nytimes.com/2012/01/27/the-week-in-pictures-for-jan-27/",
-                     "http://www.nytimes.com/pages/world/asia/index.html"
+                     "http://www.nytimes.com/pages/world/asia/index.html",
+                     "https://www.nytimes.com/section/business?module=SectionsNav&action=click&version=BrowseTree&region=TopBar&contentCollection=Business&pgtype=sectionfront",
+                     "https://www.nytimes.com/section/technology/personaltech"
                     ]
   end
 
@@ -151,6 +155,66 @@ describe NewYorkTimesPageParserV2 do
     end
   end
 
+  describe "when parsing the French comedian article with the 2018 formatting" do
+    before do
+      @valid_options = {
+        :url => 'https://www.nytimes.com/2014/01/12/world/europe/show-banned-french-comedian-has-new-one.html',
+        :page => File.read('spec/fixtures/new_york_times/show-banned-french-comedian-has-new-one-2018.html'),
+        :valid_hash => 'ab9cafaac593c12b5b457a5bfdd3eda5'
+      }
+      @pa = NewYorkTimesPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Show Banned, French Comedian Has New One'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("2014-01-12T05:35:51+00:00")
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'PARIS — A French comedian said Saturday that he had dropped a show banned for its anti-Semitic language and was planning one that would cause no objections.'
+      @pa.content[3].should == '“We live in a democratic country and I have to comply with the laws, despite the blatant political interference,” he said. “As a comedian, I have pushed the debate to the very edge of laughter.”'
+      @pa.content.size.should == 18
+    end
+  end
+
+
+  describe "when parsing trump kim policy article" do
+    before do
+      @valid_options = {
+        :url => 'https://www.nytimes.com/2018/06/12/world/asia/trump-kim-policy.html',
+        :page => File.read('spec/fixtures/new_york_times/trump-kim-policy.html'),
+        :valid_hash => 'ab62998617a2fb91552122a9ac845e4c'
+      }
+      @pa = NewYorkTimesPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Vague on Details, Trump Is Betting on ‘Special Bond’ With Kim to Deliver Deal'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("2018-06-12T16:35:00+00:00")
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'SINGAPORE — On paper, there is nothing President Trump extracted from North Korea’s leader, Kim Jong-un, in their summit meeting that Mr. Kim’s father and grandfather had not already given to past American presidents.'
+      @pa.content[8].should == '“I don’t know that I’ll ever admit that,” he added, “but I’ll find some kind of an excuse.”'
+      @pa.content.last.should == "Whatever he gets, it will be judged by one standard: whether he has “solved” the North Korea problem, as he vowed he would, rather than passing it on to his successor."
+      @pa.content.size.should == 28
+    end
+  end
+
 
   describe "retrieve_page" do
     it "should retrieve the article from the nyt website" do
@@ -174,7 +238,7 @@ describe NewYorkTimesPageParserV2 do
        "http://www.nytimes.com/services/xml/rss/nyt/World.xml"
       ].each do |fu|
         next if urls.size > 25
-        urls += Net::HTTP.get(URI(fu)).scan(/http:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
+        urls += Net::HTTP.get(URI(fu)).scan(/https:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
         urls.uniq!
       end
 

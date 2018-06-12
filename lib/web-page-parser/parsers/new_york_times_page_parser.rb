@@ -84,9 +84,14 @@ module WebPageParser
     def content
       return @content if @content
       @content = []
-      story_body = html_doc.css('p.story-content')
+      # 2018
+      story_body = html_doc.css('article#story div.StoryBodyCompanionColumn p')
       if story_body.empty?
-        # old style
+        # 2017
+        story_body = html_doc.css('p.story-content')
+      end
+      if story_body.empty?
+        # older style
         story_body = html_doc.css('p[itemprop=articleBody]')
       end
       story_body.each do |p|
@@ -97,7 +102,7 @@ module WebPageParser
 
     def date
       return @date if @date
-      if date_meta = html_doc.at_css('meta[name=dat]')
+      if date_meta = html_doc.at_css('meta[name=dat],meta[itemprop=datePublished]')
         @date = DateTime.parse(date_meta['content']) rescue nil
       end
       @date
