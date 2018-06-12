@@ -7,8 +7,8 @@ GEM
     mini_portile2 (2.1.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    rake (12.0.0)
-    rdoc (5.0.0)
+    rake (10.5.0)
+    rdoc (6.0.4)
     rspec (2.11.0)
       rspec-core (~> 2.11.0)
       rspec-expectations (~> 2.11.0)
@@ -25,9 +25,9 @@ DEPENDENCIES
   curb (~> 0.8.5)
   htmlentities (>= 4.3.1)
   nokogiri (~> 1.6.1)
-  rake
+  rake (< 11.0)
   rdoc
   rspec (~> 2.11.0)
 
 BUNDLED WITH
-   1.13.7
+   1.15.1

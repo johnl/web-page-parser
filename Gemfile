@@ -12,5 +12,5 @@ end
 group :development do
   gem 'rdoc'
   gem "rspec", '~>2.11.0'
-  gem "rake"
+  gem "rake", "< 11.0"
 end
