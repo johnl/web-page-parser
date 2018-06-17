@@ -12,7 +12,7 @@ module WebPageParser
   end
 
   # WashingtonPostPageParserV1 parses washpo web pages using html
-  # parsing.
+  # parsing. Doesn't work since 2018
   class WashingtonPostPageParserV1 < WebPageParser::BaseParser
     require 'nokogiri'
 
@@ -56,4 +56,40 @@ module WebPageParser
       @date
     end
   end
+
+  # WashingtonPostPageParserV2 parses washpo web pages using html
+  # parsing. Works since June 2018.
+  class WashingtonPostPageParserV2 < WebPageParser::BaseParser
+    require 'nokogiri'
+
+    # WashPo articles have a uuid in the url
+    def guid_from_url
+      # get the last large number from the url, if there is one
+      url.to_s.scan(/[a-f0-9-]{30,40}/).last
+    end
+
+    def html_doc
+      @html_document ||= Nokogiri::HTML(page)
+    end
+
+    def title
+      @title ||= html_doc.css('h1[itemprop="headline"]').text.strip
+    end
+
+    def content
+      return @content if @content
+      story_body = html_doc.css('article:first p,article:first div.subhead').collect { |p| p.text.strip }
+      @content = story_body.select { |p| !p.empty? }
+    end
+
+    def date
+      return @date if @date
+      if date_meta = html_doc.at_css('*[itemprop="datePublished"]')
+        @date = DateTime.parse(date_meta['content']).new_offset(0) rescue nil
+      end
+      @date
+    end
+
+  end
+
 end
