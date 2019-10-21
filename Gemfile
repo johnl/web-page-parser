@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "htmlentities", ">= 4.3.1"
 gem "curb", "~>0.8.5"
-gem "nokogiri", "~> 1.6.1"
+gem "nokogiri", "~> 1.10.4"
 
 platforms :ruby_18 do
   # Needs libonig-dev debian/ubuntu package
