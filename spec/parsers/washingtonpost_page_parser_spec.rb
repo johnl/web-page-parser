@@ -209,6 +209,21 @@ describe WashingtonPostPageParserV2 do
       @pa.content.size.should eq 25
       @pa.hash.should eq @valid_options[:valid_hash]
     end
+
+    describe "retrieve_page" do
+      it "should retrieve the article from the washpo website" do
+        @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/world/will-a-bust-follow-the-boom-in-britain/2014/01/18/3677a6ae-7f9d-11e3-97d3-b9925ce2c57b_story.html?tid=hpModule_04941f10-8a79-11e2-98d9-3012c1cd8d1e&hpid=z16")
+        @pa.title.should =~ /Will a bust follow the boom in Britain/i
+      end
+
+      it "should retrieve the full article from the washpo website when given a first page url" do
+        @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/national-security/house-to-vote-on-rules-governing-next-phase-of-trump-impeachment-inquiry/2019/10/31/bc2f5e7a-fbcc-11e9-ac8c-8eced29ca6ef_story.html")
+        @pa.content.size.should > 40
+        @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/national-security/house-to-vote-on-rules-governing-next-phase-of-trump-impeachment-inquiry/2019/10/31/bc2f5e7a-fbcc-11e9-ac8c-8eced29ca6ef_story.html")
+        @pa.content.size.should > 40
+      end
+    end
+
   end
 
 end
