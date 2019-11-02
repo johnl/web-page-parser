@@ -217,13 +217,61 @@ describe WashingtonPostPageParserV2 do
       end
 
       it "should retrieve the full article from the washpo website when given a first page url" do
-        @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/national-security/house-to-vote-on-rules-governing-next-phase-of-trump-impeachment-inquiry/2019/10/31/bc2f5e7a-fbcc-11e9-ac8c-8eced29ca6ef_story.html")
-        @pa.content.size.should > 40
+        @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/world/will-a-bust-follow-the-boom-in-britain/2014/01/18/3677a6ae-7f9d-11e3-97d3-b9925ce2c57b_story.html?tid=hpModule_04941f10-8a79-11e2-98d9-3012c1cd8d1e&hpid=z16")
+        @pa.content.size.should > 20
         @pa = WashingtonPostPageParserV2.new(:url => "https://www.washingtonpost.com/national-security/house-to-vote-on-rules-governing-next-phase-of-trump-impeachment-inquiry/2019/10/31/bc2f5e7a-fbcc-11e9-ac8c-8eced29ca6ef_story.html")
         @pa.content.size.should > 40
       end
     end
 
+  end
+end
+
+describe WashingtonPostPageParserV3 do
+  describe 'when parsing the beto orourke article' do
+    before do
+      @valid_options = {
+        :url => 'https://www.washingtonpost.com/politics/beto-orourke-quits-presidential-race-amid-financial-strains-and-lagging-popularity/2019/11/01/e25c380c-fcee-11e9-8190-6be4deb56e01_story.html',
+        :page => File.read('spec/fixtures/washingtonpost/beto-orourke-quits.html'),
+        :valid_hash => 'a71030b41cf83cdf3249082d7d3a8576'
+      }
+      @pa = WashingtonPostPageParserV3.new(@valid_options)
+    end
+
+    it "should parse the guid" do
+      @pa.guid.should eq "e25c380c-fcee-11e9-8190-6be4deb56e01"
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq 'Beto O’Rourke quits presidential race amid financial strains and lagging popularity'
+    end
+
+    it 'should parse the date in UTC' do
+      @pa.date.should eq DateTime.parse("2019-11-01T22:25:00+00:00")
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq 'Beto O’Rourke literally came bounding into the presidential race, jumping atop tables in jam-packed coffee shops, smiling like a Kennedy and waving his arms like a conductor.'
+      @pa.content.last.should eq "David Weigel contributed to this report."
+      @pa.content[10].should eq '“This is a campaign that has prided itself on seeing things clearly and on speaking honestly, and on acting decisively,” he told a group of shocked supporters in Des Moines, where he had been scheduled to attend a multicandidate dinner. “We have to clearly see at this point that we do not have the means to pursue this campaign successfully. And that my service will not be as a candidate nor as the nominee of this party for the presidency.”'
+      @pa.content.size.should eq 36
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+  end
+
+
+  describe "retrieve_page" do
+    it "should retrieve the article from the washpo website" do
+      @pa = WashingtonPostPageParserV3.new(:url => "https://www.washingtonpost.com/politics/beto-orourke-quits-presidential-race-amid-financial-strains-and-lagging-popularity/2019/11/01/e25c380c-fcee-11e9-8190-6be4deb56e01_story.html")
+      @pa.title.should =~ /Beto O’Rourke quits/i
+    end
+
+    it "should retrieve the full article from the washpo website when given a first page url" do
+      @pa = WashingtonPostPageParserV3.new(:url => "https://www.washingtonpost.com/national-security/house-to-vote-on-rules-governing-next-phase-of-trump-impeachment-inquiry/2019/10/31/bc2f5e7a-fbcc-11e9-ac8c-8eced29ca6ef_story.html")
+      @pa.content.size.should > 35
+      @pa = WashingtonPostPageParserV3.new(:url => "https://www.washingtonpost.com/politics/beto-orourke-quits-presidential-race-amid-financial-strains-and-lagging-popularity/2019/11/01/e25c380c-fcee-11e9-8190-6be4deb56e01_story.html")
+      @pa.content.size.should > 30
+    end
   end
 
 end
