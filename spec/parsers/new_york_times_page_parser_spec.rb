@@ -232,10 +232,10 @@ describe NewYorkTimesPageParserV2 do
     it "should retrieve more than the paywall url limit" do
       urls = []
       [
-       "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-       "http://rss.nytimes.com/services/xml/rss/nyt/GlobalHome.xml",
-       "http://rss.nytimes.com/services/xml/rss/nyt/NYRegion.xml",
-       "http://www.nytimes.com/services/xml/rss/nyt/World.xml"
+       "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+       "https://rss.nytimes.com/services/xml/rss/nyt/GlobalHome.xml",
+       "https://rss.nytimes.com/services/xml/rss/nyt/NYRegion.xml",
+       "https://www.nytimes.com/services/xml/rss/nyt/World.xml"
       ].each do |fu|
         next if urls.size > 25
         urls += Net::HTTP.get(URI(fu)).scan(/https:\/\/www.nytimes.com\/[0-9]{4}\/[^<"?]+/)
