@@ -9,7 +9,7 @@ module WebPageParser
     end
 
     def self.create(options = {})
-      GuardianPageParserV3.new(options)
+      GuardianPageParserV4.new(options)
     end
   end
 
@@ -112,4 +112,44 @@ module WebPageParser
     end
   end
 
+  class GuardianPageParserV4 < GuardianPageParserV3
+    def content
+      return @content if @content
+
+      story_body = html_doc.css('article div[itemprop=articleBody] > *').select do |e|
+        e.name == 'p' || e.name == 'h2' || e.name == 'h3' || e.name == 'ul'
+      end
+      story_body = story_body.collect do |p|
+        if p.name == 'ul'
+          next if p.classes.include?('social')
+
+          p.css('li').collect { |li| li.text.empty? ? nil : li.text.strip }
+        else
+          p.text.empty? ? nil : p.text.strip
+        end
+      end.flatten.compact
+      if (description_meta = html_doc.at_css('meta[itemprop="description"]'))
+        story_body.unshift description_meta['content']
+      end
+      story_body
+    end
+
+    def date
+      return @date if @date
+
+      if (date_meta = html_doc.at_css('time[itemprop="datePublished"]'))
+        @date = parse_datetime_or_nil date_meta['datetime']
+      end
+      @date
+    end
+
+    def guid
+      guid = super
+      guid.nil? ? nil : guid.gsub('http:', 'https:')
+    end
+
+    def url
+      super.gsub('http:', 'https:')
+    end
+  end
 end

@@ -11,7 +11,8 @@ describe GuardianPageParserFactory do
                    "http://www.guardian.co.uk/tv-and-radio/2012/jan/26/well-take-manhattan-david-bailey",
                    "http://www.theguardian.com/world/2013/aug/24/syria-cameron-obama-intervention",
                    "http://www.theguardian.com/commentisfree/2013/aug/25/coalition-leaders-change-tune-rawnsley",
-                   "http://www.theguardian.com/uk-news/2013/aug/25/police-officer-cleared-taser-brighton"
+                   "http://www.theguardian.com/uk-news/2013/aug/25/police-officer-cleared-taser-brighton",
+                   "https://www.theguardian.com/uk-news/2013/aug/25/police-officer-cleared-taser-brighton"
                   ]
     @invalid_urls = [
                      "http://www.guardian.co.uk/business",
@@ -316,9 +317,10 @@ describe GuardianPageParserV2 do
     end
 
   end
+end
 
-  describe GuardianPageParserV3 do
-    describe "when parsing the Julian Assange article" do
+describe GuardianPageParserV3 do
+  describe "when parsing the Julian Assange article" do
     before do
       @valid_options = {
         :url => 'https://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview',
@@ -345,7 +347,50 @@ describe GuardianPageParserV2 do
     end
 
   end
+end
 
+describe GuardianPageParserV4 do
+
+  it "should change http urls to https" do
+    pa = GuardianPageParserV4.new(url: "http://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview")
+    pa.url.should eq "https://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview"
   end
 
+  it "should change http urls to https" do
+    pa = GuardianPageParserV4.new(url: "http://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview",
+                                  guid: "http://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview")
+    pa.guid.should eq "https://www.theguardian.com/media/2016/dec/24/julian-assange-donald-trump-hillary-clinton-interview"
+  end
+
+  describe "boris johnson apologises article" do
+    before do
+      @valid_options = {
+        url: 'https://www.theguardian.com/politics/2019/nov/03/boris-johnson-apologises-tory-members-not-leaving-eu-october',
+        page: File.read("spec/fixtures/guardian/boris-johnson-apologises.html"),
+        valid_hash: '0469daffeadb2c9c6f261db7bbef34a6'
+      }
+      @pa = GuardianPageParserV4.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Brexit: Boris Johnson apologises to Tory members for deadline extension"
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should eq DateTime.parse("Sun 3 Nov 2019 15:41:45 GMT")
+      @pa.date.zone.should eq '+00:00'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq "PM says failure to leave EU on 31 October is matter of ‘deep regret’ and blames parliament"
+      @pa.content.last.should eq "She told the paper: “I was very pleased to receive the whip back and I wanted to continue in parliament. It was only after a period of reflection that I realised that I needed to bring the three-and-a-half-year conflict between the result of the referendum in my constituency and my own view of where the future interests of the country lie to a close.”"
+      @pa.content.size.should eq 17
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+
+    it "should not include the social buttons in the content" do
+      @pa.content.to_s.should_not =~ /Twitter/m
+      @pa.content.to_s.should_not =~ /Facebook/m
+    end
+  end
 end

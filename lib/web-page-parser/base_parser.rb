@@ -64,6 +64,11 @@ module WebPageParser
       digest.to_s
     end
 
+    def parse_datetime_or_nil(datestring)
+      DateTime.parse(datestring)
+    rescue ArgumentError
+      nil
+    end
   end
 
   # BaseRegexpParser is designed to be sub-classed to write new
