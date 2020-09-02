@@ -40,7 +40,6 @@ module WebPageParser
       end
     end
 
-
     private
 
     def retreive_successful?(page)
@@ -65,7 +64,6 @@ module WebPageParser
       @content = STRIP_TAGS_RE.gsub(@content, '')
       @content = @content.scan(PARA_RE).collect { |a| a[1] }
     end
-
   end
 
   # NewYorkTimesPageParserV2 parses New York Times web pages,
@@ -84,17 +82,7 @@ module WebPageParser
     def content
       return @content if @content
       @content = []
-      # 2018
-      story_body = html_doc.css('article#story div.StoryBodyCompanionColumn p')
-      if story_body.empty?
-        # 2017
-        story_body = html_doc.css('p.story-content')
-      end
-      if story_body.empty?
-        # older style
-        story_body = html_doc.css('p[itemprop=articleBody]')
-      end
-      story_body.each do |p|
+      html_doc.css('article#story div.StoryBodyCompanionColumn > div > p').each do |p|
         @content << p.text.strip
       end
       @content
@@ -102,12 +90,10 @@ module WebPageParser
 
     def date
       return @date if @date
-      if date_meta = html_doc.at_css('meta[name=dat],meta[itemprop=datePublished]')
+      if date_meta = html_doc.at_css('meta[property="article:published"]')
         @date = DateTime.parse(date_meta['content']) rescue nil
       end
       @date
     end
-
   end
-
 end

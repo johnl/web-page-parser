@@ -34,67 +34,6 @@ describe NewYorkTimesPageParserFactory do
 end
 
 
-describe NewYorkTimesPageParserV1 do
-  describe "when parsing the Gingrich article" do
-    before do
-      @valid_options = { 
-        :url => 'http://www.nytimes.com/2012/01/27/us/politics/the-long-run-gingrich-stuck-to-caustic-path-in-ethics-battles.html?src=me&ref=general',
-        :page => File.read("spec/fixtures/new_york_times/the-long-run-gingrich-stuck-to-caustic-path-in-ethics-battles.html"),
-        :valid_hash => '7562feadc3db5c9a4c474cc0e9db421a'
-      }
-      @pa = NewYorkTimesPageParserV1.new(@valid_options)
-    end
-
-    it "should parse the title" do
-      @pa.title.should == "Gingrich Stuck to Caustic Path in Ethics Battles"
-    end
-    
-    it "should parse the date" do
-      @pa.date.should == DateTime.parse("Sat Jan 26 2012")
-    end
-
-    it "should calculate the hash correctly" do
-      @pa.hash.should == @valid_options[:valid_hash]
-    end
-
-    it "should parse the content" do
-      @pa.content[0].should == "WASHINGTON — Newt Gingrich had an urgent warning for conservatives: Jim Wright, the Democratic speaker of the House, was out to destroy America."
-      @pa.content[4].should == "Mr. Gingrich, Democrats and Republicans here agree, emerged as one of Washington’s most aggressive practitioners of slash-and-burn politics; many fault him for erasing whatever civility once existed in the capital. He believed, and preached, that harsh language could win elections; in 1990, the political action committee he ran, Gopac, instructed Republican candidates to learn to “speak like Newt,” and offered a list of words to describe Democrats — like decay, traitors, radical, sick, destroy, pathetic, corrupt and shame."
-      @pa.content.size.should == 48
-    end
-  end
-
-  describe "when parsing the hamas-leader article" do
-    before do
-      @valid_options = { 
-        :url => 'http://www.nytimes.com/2012/01/28/world/middleeast/khaled-meshal-the-leader-of-hamas-vacates-damascus.html',
-        :page => File.read("spec/fixtures/new_york_times/khaled-meshal-the-leader-of-hamas-vacates-damascus.html"),
-        :valid_hash => '99ae48e19224402890b380019ca5fbda'
-      }
-      @pa = NewYorkTimesPageParserV1.new(@valid_options)
-    end
-
-    it "should parse the title" do
-      @pa.title.should == "Hamas Leader Abandons Longtime Base in Damascus"
-    end
-    
-    it "should parse the date" do
-      @pa.date.should == DateTime.parse("Fri Jan 27 2012")
-    end
-
-    it "should calculate the hash correctly" do
-      @pa.hash.should == @valid_options[:valid_hash]
-    end
-
-    it "should parse the content" do
-      @pa.content[0].should == "GAZA — Khaled Meshal, the leader of the Palestinian Islamist movement Hamas, has effectively abandoned his longtime base in Syria, where a popular uprising has left thousands dead, and has no plans to return, Hamas sources in Gaza said Friday."
-      @pa.content[4].should == %Q{On Sunday, Mr. Meshal is scheduled to make his first official visit to Jordan since he was deported in 1999. Qatar, one of Mr. Assad’s most vocal Arab critics, played mediator in arranging for Mr. Meshal’s visit to Jordan, which is expected to include a meeting with King Abdullah II. Jordan was the first Arab country to urge Mr. Assad to step down.}
-      @pa.content.last.should == "Ethan Bronner contributed reporting from Jerusalem."
-      @pa.content.size.should == 7
-      @pa.hash.should == @valid_options[:valid_hash]
-    end
-  end
-end
 
 describe NewYorkTimesPageParserV2 do
   describe "when parsing the Gingrich article" do
@@ -112,7 +51,7 @@ describe NewYorkTimesPageParserV2 do
     end
     
     it "should parse the date" do
-      @pa.date.should == DateTime.parse("Sat Jan 26 2012")
+      @pa.date.should == DateTime.parse("2012-01-27T04:09:35+00:00")
     end
 
     it "should calculate the hash correctly" do
@@ -141,7 +80,7 @@ describe NewYorkTimesPageParserV2 do
     end
     
     it "should parse the date" do
-      @pa.date.should == DateTime.parse("Jan 12th 2014")
+      @pa.date.should == DateTime.parse("2014-01-12T05:35:51+00:00")
     end
 
     it "should calculate the hash correctly" do
@@ -190,7 +129,7 @@ describe NewYorkTimesPageParserV2 do
       @valid_options = {
         :url => 'https://www.nytimes.com/2018/06/12/world/asia/trump-kim-policy.html',
         :page => File.read('spec/fixtures/new_york_times/trump-kim-policy.html'),
-        :valid_hash => 'ab62998617a2fb91552122a9ac845e4c'
+        :valid_hash => '6149e45ade82fb37973ecb78d3ef774e'
       }
       @pa = NewYorkTimesPageParserV2.new(@valid_options)
     end
@@ -212,6 +151,37 @@ describe NewYorkTimesPageParserV2 do
       @pa.content[8].should == '“I don’t know that I’ll ever admit that,” he added, “but I’ll find some kind of an excuse.”'
       @pa.content.last.should == "Whatever he gets, it will be judged by one standard: whether he has “solved” the North Korea problem, as he vowed he would, rather than passing it on to his successor."
       @pa.content.size.should == 28
+    end
+  end
+
+  describe "when teacher union article" do
+    before do
+      @valid_options = {
+        :url => 'https://www.nytimes.com/2020/07/29/us/teacher-union-school-reopening-coronavirus.html',
+        :page => File.read('spec/fixtures/new_york_times/teacher-union-school-reopening-coronavirus.html'),
+        :valid_hash => '7b15e81d671611707228bddeec644abb'
+      }
+      @pa = NewYorkTimesPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Teachers Are Wary of Returning to Class, and Online Instruction Too'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("2020-07-29T18:51:51+00:00")
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'As the nation heads toward a chaotic back-to-school season, with officials struggling over when to reopen classrooms and how to engage children online, teachers’ unions are playing a powerful role in determining the shape of public education as the coronavirus pandemic continues to rage.'
+      @pa.content[28].should == 'Across the country, it is likely that most students will experience a mix of online and in-person education this academic year, sometimes during the same week. That means teachers will need to do two very different jobs: teach in classrooms and online.'
+      @pa.content.last.should == '“I’m excited to go back, if that’s what’s decided,” she said. “I miss my students.”'
+      @pa.content.to_s.should_not =~ /Updated Sept. 2, 2020/
+      @pa.content.size.should == 47
     end
   end
 
