@@ -185,6 +185,37 @@ describe NewYorkTimesPageParserV2 do
     end
   end
 
+  describe "convention wraps up article" do
+    before do
+      @valid_options = {
+        :url => 'https://www.nytimes.com/2020/08/27/us/elections/heres-how-to-watch-as-the-convention-wraps-up.html',
+        :page => File.read('spec/fixtures/new_york_times/heres-how-to-watch-as-the-convention-wraps-up.html'),
+        :valid_hash => '9d816c12e8ba956d33127a8b9912a076'
+      }
+      @pa = NewYorkTimesPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Here’s how to watch as the convention wraps up.'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("2020-08-27T15:25:34+00:00")
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should == 'After eight intense nights of programming, the 2020 conventions will come to an end on Thursday: President Trump will formally accept the Republican nomination, and the general election season will officially begin.'
+      @pa.content[3].should == 'The Times will stream the convention, accompanied by chat-based live analysis from our reporters and real-time speech highlights.'
+      @pa.content[8].should == 'Stacia Brightmon, a Marine Corps veteran who participated in an apprenticeship program.'
+      @pa.content.to_s.should_not =~ /Maggie Astor is a political reporter based in New York/
+      @pa.content.last.should == "Dana White, the president of the Ultimate Fighting Championship."
+    end
+  end
+
 
   describe "retrieve_page" do
     it "should retrieve the article from the nyt website" do

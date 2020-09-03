@@ -82,7 +82,7 @@ module WebPageParser
     def content
       return @content if @content
       @content = []
-      html_doc.css('article#story div.StoryBodyCompanionColumn > div > p').each do |p|
+      html_doc.css('article#story div.StoryBodyCompanionColumn > div > p, article#story div.StoryBodyCompanionColumn > div > ul > li > p').each do |p|
         @content << p.text.strip
       end
       @content
