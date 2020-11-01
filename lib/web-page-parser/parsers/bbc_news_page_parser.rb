@@ -15,7 +15,7 @@ module WebPageParser
       end
 
       def self.create(options = {})
-        BbcNewsPageParserV5.new(options)
+        BbcNewsPageParserV6.new(options)
       end
     end
 
@@ -217,38 +217,27 @@ module WebPageParser
       end
 
       def title
-        @title ||= html_doc.css('h1.story-body__h1').text.strip
+        return @title if @title
+        @title = html_doc.css('h1#main-heading').text.strip
+        @title = html_doc.xpath("//meta[@property='og:title']/@content").to_s.strip if @title.empty?
+        @title
       end
 
       def content
         return @content if @content
         @content = []
-
-        story_body = html_doc.css('div.story-body > div.story-body__inner')
-
-        story_body.children.each do |n|
-          case n.name
-          when 'p', 'h2', 'h3'
-            @content << n.text.strip
-          when 'ul'
-            if n['class'] =~ /story-body/
-              n.css('li').each do |li|
-                @content << li.text.strip
-              end
-            end
-          end
+        article = html_doc.xpath("//article").first
+        return [] unless article
+        article.xpath("//header | //nav | //section | //comment() | //style | //script | //div[@data-component='include-block'] | //figcaption//span").each { |n| n.remove }
+        article.xpath(".//p | .//li | .//figcaption | .//h2 | .//h3").each do |n|
+          @content << n.text.strip
         end
         @content
       end
 
       def date
         return @date if @date
-        if date_meta = html_doc.at_css('meta[name=OriginalPublicationDate]')
-          @date = DateTime.parse(date_meta['content']) rescue nil
-        end
-        @date
+        @date = DateTime.parse(html_doc.xpath("//article//time[@datetime]/@datetime").first) rescue nil
       end
-
     end
-
 end

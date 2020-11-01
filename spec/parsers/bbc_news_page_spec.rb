@@ -57,9 +57,9 @@ describe BbcNewsPageParserV6 do
   describe "Inheritance tax plans article" do
     before do
       @valid_options = {
-        :url => 'http://www.bbc.co.uk/news/election-2015-32271505',
-        :page => File.read("spec/fixtures/bbc_news/32271505.html"),
-        :valid_hash => 'a2d1c84cc980c3991c2e57d1cd6aca5f'
+        url: 'http://www.bbc.co.uk/news/election-2015-32271505',
+        page: File.read("spec/fixtures/bbc_news/32271505-2020.html"),
+        valid_hash: '36298b152e10ba2a5900c45d33aa5467'
       }
       @pa = BbcNewsPageParserV6.new(@valid_options)
     end
@@ -69,51 +69,97 @@ describe BbcNewsPageParserV6 do
     end
 
     it "should calculate the right hash" do
-      @pa.hash.should == @valid_options[:valid_hash]
+      @pa.hash.should eq @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
-      @pa.content[0].should == %q{Chancellor George Osborne has said Conservative plans to remove family homes worth up to £1m from inheritance tax "supports the basic human instinct to provide for your children".}
-      @pa.content.last.should == %q{However, when asked whether the Lib Dems would block the proposals if they ended up back in coalition, he declined to say he would, instead saying: "I'm saying I strongly disagree with it. Our priority... is further increases in the income tax personal allowance... we've stopped things in this parliament including cuts to inheritance tax for millionaires."}
-      @pa.content.size.should == 33
-      @pa.content[8].should == "Labour has been setting out plans to raise an extra £7.5bn a year through closing tax loopholes and imposing bigger fines on tax avoiders"
+      @pa.content[0].should eq 'George Osborne: "We believe that your home... should belong to you and your family, not the taxman"'
+      @pa.content[1].should eq %q(Chancellor George Osborne has said a Conservative plan to remove family homes worth up to £1m from inheritance tax "supports the basic human instinct to provide for your children".)
+      @pa.content[8].should eq "Labour has been setting out plans to raise an extra £7.5bn a year through closing tax loopholes and imposing bigger fines on tax avoiders"
+      @pa.content.last.should eq %q(However, when asked whether the Lib Dems would block the proposals if they ended up back in coalition, he declined to say he would, instead saying: "I'm saying I strongly disagree with it. Our priority... is further increases in the income tax personal allowance... we've stopped things in this parliament including cuts to inheritance tax for millionaires.")
+      @pa.content.size.should eq 37
     end
   end
 
   describe "Hilary Clinton article" do
     before do
       @valid_options = {
-        :url => 'http://www.bbc.co.uk/news/world-us-canada-32275608',
-        :page => File.read("spec/fixtures/bbc_news/32275608.html"),
-        :valid_hash => '09c6d4d91276eda57bc6cfc974220c88'
+        url: 'http://www.bbc.co.uk/news/world-us-canada-32275608',
+        page: File.read("spec/fixtures/bbc_news/32275608-2020.html"),
+        valid_hash: '4e91f2a7c24637d9d8d4bd0c690885d4'
       }
       @pa = BbcNewsPageParserV6.new(@valid_options)
     end
 
     it "should parse the title" do
-      @pa.title.should == "Hillary Clinton to declare 2016 Democratic nomination bid"
+      @pa.title.should eq "Hillary Clinton declares 2016 Democratic presidential bid"
     end
 
     it "should calculate the right hash" do
-      @pa.hash.should == @valid_options[:valid_hash]
+      @pa.hash.should eq @valid_options[:valid_hash]
     end
 
     it "should parse the content" do
-      @pa.content[0].should == "Former US Secretary of State Hillary Clinton is expected to formally declare her run for the 2016 Democratic presidential nomination shortly."
-      @pa.content.last.should == "Mrs Clinton stood by her husband when he was exposed as having had an affair with a White House intern, Monica Lewinsky."
-      @pa.content.size.should == 21
+      @pa.content[0].should eq %q("I'm running for president," Hillary Clinton declares in an online video)
+      @pa.content[1].should eq "Former US Secretary of State Hillary Clinton has formally entered the 2016 race for the White House in a bid to become the first woman US president."
+      @pa.content[8].should eq "How it all started for Hillary Clinton"
+      @pa.content.last.should eq "Investigated by the State Department for her use of a private email server, circumventing legal requirements"
+      @pa.content.size.should eq 38
     end
 
     it "should parse the headers in the content" do
-      @pa.content[5].should == "Analysis - Anthony Zurcher, BBC North America reporter, Washington DC"
-      @pa.content[11].should == "Is this Hillary Clinton's time?"
+      @pa.content[14].should eq "Analysis: Gary O'Donoghue, BBC News,  Des Moines, Iowa"
+      @pa.content[22].should eq "Is this Hillary Clinton's time?"
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("Apr 12 22:36:19 +0000 2015")
     end
   end
 
+  describe "Covid sage article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/health-54528983',
+        page: File.read("spec/fixtures/bbc_news/54528983.html"),
+        valid_hash: '198cf66c8f6cc881b235c1e25201f7bb'
+      }
+      @pa = BbcNewsPageParserV6.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Covid Sage documents: The scientific evidence and what No 10 then did"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq "New measures announced by Boris Johnson this week fell short of advice provided by scientists"
+      @pa.content[1].should eq "Documents have revealed the UK government did not follow the advice given to it by scientists as coronavirus cases began to surge."
+      @pa.content[5].should eq "What scientists recommended: They did not go as far as recommending a full lockdown on the scale of the one in the spring. This was also an outcome Prime Minister Boris Johnson has been extremely keen to avoid."
+      @pa.content[12].should eq "Going to work"
+      @pa.content.last.should eq "TESTING: How do I get a virus test?"
+      @pa.content.size.should eq 34
+    end
+
+    it "should parse the headers" do
+      @pa.content[4].should eq "Full lockdown"
+    end
+
+    it "should parse the date" do
+      @pa.date.should eq DateTime.parse("October 13 23:44:11 +0000 2020")
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+  end
+
+  it "should retrieve the article from the bbc website" do
+    @pa = BbcNewsPageParserV6.new(url: "http://www.bbc.co.uk/news/business-11125504")
+    @pa.title.should eq "UK economy 'to pick up in near term'"
+  end
 end
 
 describe BbcNewsPageParserV5 do
-
   describe "downloaded article with non-utf8" do
     page = BbcNewsPageParserV5.new(:url => "http://news.bbc.co.uk/1/hi/uk_politics/7984711.stm")
     page.hash.should_not == nil
@@ -348,11 +394,6 @@ describe BbcNewsPageParserV5 do
       @pa.content.last.should == %q{However, when asked whether the Lib Dems would block the proposals if they ended up back in coalition, he declined to say he would, instead saying: "I'm saying I strongly disagree with it. Our priority... is further increases in the income tax personal allowance... we've stopped things in this parliament including cuts to inheritance tax for millionaires."}
       @pa.content.size.should == 29
     end
-  end
-
-  it "should retrieve the article from the bbc website" do
-    @pa = BbcNewsPageParserV5.new(:url => "http://www.bbc.co.uk/news/business-11125504")
-    @pa.title.should == "UK economy 'to pick up in near term'"
   end
 
 end
