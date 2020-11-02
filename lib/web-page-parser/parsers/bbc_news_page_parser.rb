@@ -228,7 +228,7 @@ module WebPageParser
         @content = []
         article = html_doc.xpath("//article").first
         return [] unless article
-        article.xpath("//header | //nav | //section | //comment() | //style | //script | //div[@data-component='include-block'] | //figcaption//span").each { |n| n.remove }
+        article.xpath("//aside | //header | //nav | //section | //comment() | //style | //script | //div[@data-component='include-block'] | //figcaption//span").each { |n| n.remove }
         article.xpath(".//p | .//li | .//figcaption | .//h2 | .//h3").each do |n|
           @content << n.text.strip
         end

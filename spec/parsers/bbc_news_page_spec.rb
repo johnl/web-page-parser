@@ -153,6 +153,21 @@ describe BbcNewsPageParserV6 do
     end
   end
 
+  describe "Long Covid article" do
+    before do
+      @valid_options = {
+        url: "https://www.bbc.co.uk/news/health-54622059",
+        page: File.read("spec/fixtures/bbc_news/54622059.html")
+      }
+      @pa = BbcNewsPageParserV6.new(@valid_options)
+    end
+
+    it "should not include the Top Stories section" do
+      @pa.content.to_s.should_not match("Top Stories")
+      @pa.content.to_s.should_not match("Prince William")
+    end
+  end
+
   it "should retrieve the article from the bbc website" do
     @pa = BbcNewsPageParserV6.new(url: "http://www.bbc.co.uk/news/business-11125504")
     @pa.title.should eq "UK economy 'to pick up in near term'"
