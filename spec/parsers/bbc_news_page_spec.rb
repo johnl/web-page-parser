@@ -463,6 +463,7 @@ describe BbcNewsPageParserV4 do
   end
 
   it "should retrieve an old iso-8859-1 article without getting upset about encoding" do
+    pending "This url is now 404 and I can't find any other iso-8859-1 articles. I think they converted them all to utf8 now"
     @pa = BbcNewsPageParserV4.new(url: "http://www.bbc.co.uk/news/magazine-20761954")
     @pa.title.should eq "Quiz of the Year: 52 weeks 52 questions, part four"
   end
