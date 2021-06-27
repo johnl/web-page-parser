@@ -253,4 +253,32 @@ describe NewYorkTimesPageParserV2 do
 
   end
 
+  describe "when parsing the ignoring deadlines article from 2021" do
+    before do
+      @valid_options = {
+        :url => 'https://www.nytimes.com/2012/08/22/us/politics/ignoring-calls-to-quit-akin-appeals-to-voters-in-ad.html?hp',
+        :page => File.read('spec/fixtures/new_york_times/ignoring-deadlines-2021.html'),
+        :valid_hash => '3eb16b452d15d67f1ff004bb5beae43d'
+      }
+      @pa = NewYorkTimesPageParserV2.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should == 'Ignoring Deadline to Quit, G.O.P. Senate Candidate Defies His Party Leaders'
+    end
+
+    it "should parse the date" do
+      @pa.date.should == DateTime.parse("Aug. 21, 2012 16:57:37")
+    end
+
+    it "should calculate the hash correctly" do
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq 'WASHINGTON — Representative Todd Akin on Tuesday ignored a deadline to abandon Missouri’s Senate race and vowed to remain the Republican nominee in defiance of his party’s leaders, including the presidential standard-bearer, Mitt Romney.'
+      @pa.content.last.should eq "Republican Party officials had hoped to push Mr. Akin out by the first deadline, set by Missouri law, at 5 p.m. on Tuesday but it passed with him taking no action. The candidate can still take his name off the ballot up to Sept. 25, but the withdrawal could be contested by Missouri’s secretary of state, a Democrat, or any election authority in the state, even one at the city or county level. That is a fight Republicans want to avoid."
+      @pa.content.size.should == 30
+    end
+  end
 end

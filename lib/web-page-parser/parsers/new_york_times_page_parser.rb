@@ -24,10 +24,11 @@ module WebPageParser
     # We want to modify the url to request multi-page articles all in one request
     def retrieve_page
       return nil unless url
-      spurl = url
+      spurl = url.gsub(/^http:/, "https:")
       spurl << (spurl.include?("?") ? "&" : "?")
       spurl << "pagewanted=all"
       p = super(spurl)
+
       # If it fails, reset the session and try one more time
       unless retreive_successful?(p)
         self.class.retrieve_session ||= WebPageParser::HTTP::Session.new
@@ -68,6 +69,7 @@ module WebPageParser
 
   # NewYorkTimesPageParserV2 parses New York Times web pages,
   # including the new format change in Janurary 2014
+  # and title/date changes in 2021
   class NewYorkTimesPageParserV2 < WebPageParser::BaseParser
     require 'nokogiri'
 
@@ -76,7 +78,7 @@ module WebPageParser
     end
 
     def title
-      @title ||= html_doc.css('h1[itemprop=headline]').text.strip
+      @title ||= html_doc.css('article#story header h1, h1[itemprop=headline]').text.strip
     end
 
     def content
@@ -90,10 +92,11 @@ module WebPageParser
 
     def date
       return @date if @date
-      if date_meta = html_doc.at_css('meta[property="article:published"]')
+      if date_meta = html_doc.at_css('meta[property="article:published_time"], meta[property="article:published"]')
         @date = DateTime.parse(date_meta['content']) rescue nil
       end
       @date
     end
   end
+
 end
