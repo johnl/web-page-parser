@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("htmlentities", "~> 4.3")
   s.add_dependency("curb", "~> 0.9.10")
-  s.add_dependency("nokogiri", "~> 1.9.1")
+  s.add_dependency("nokogiri", ">= 1.9.1", "< 1.13.0")
   s.add_development_dependency("rspec", "~> 2.11")
   s.add_development_dependency("rake")
 end
