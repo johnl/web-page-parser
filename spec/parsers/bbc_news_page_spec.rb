@@ -54,6 +54,37 @@ describe BbcNewsPageParserFactory do
 end
 
 describe BbcNewsPageParserV6 do
+
+    describe "Dorset man article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/av/uk-england-dorset-61896381',
+        page: File.read("spec/fixtures/bbc_news/61896381.html"),
+        valid_hash: '574c09f20bac8178344a990b6bd769cc'
+      }
+      @pa = BbcNewsPageParserV6.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Dorset man Chandy Green calls for disability hate crime awareness"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[2].should eq 'A man who suffers with mobility problems and has been taunted for the way he walks has said disability discrimination is often overlooked.'
+      @pa.content[6].should eq %q(Mr Green said he supported the force's approach and would prefer to see offenders educated rather than punished.)
+      @pa.content.size.should eq 9
+    end
+
+    it "should not include the published date" do
+      @pa.content.to_s.should_not =~ /Published/
+      @pa.content.to_s.should_not =~ /3 days ago/
+    end
+  end
+
   describe "Inheritance tax plans article" do
     before do
       @valid_options = {
