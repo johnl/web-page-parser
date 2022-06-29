@@ -25,10 +25,9 @@ module WebPageParser
           c.follow_location = true
           c.max_redirects = 6
           c.autoreferer = true
-          c.headers["User-Agent"] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.4) Gecko/20100101 Firefox/65.0'
+          c.headers["User-Agent"] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0'
           c.headers["Accept-encoding"] = 'gzip, deflate'
           c.headers["Accept-Language"] = 'en-GB,en;q=0.5'
-          c.headers["Cookie"] = "wp_gdpr=1|1"
         end
       end
 
