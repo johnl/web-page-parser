@@ -53,6 +53,77 @@ describe BbcNewsPageParserFactory do
   end
 end
 
+describe BbcNewsPageParserV7 do
+
+    describe "Dorset man article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/av/uk-england-dorset-61896381',
+        page: File.read("spec/fixtures/bbc_news/61896381.html"),
+        valid_hash: 'dc48936e9b6fb25ceec425941a14e440'
+      }
+      @pa = BbcNewsPageParserV7.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Dorset man Chandy Green calls for disability hate crime awareness"
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq 'A man who suffers with mobility problems and has been taunted for the way he walks has said disability discrimination is often overlooked.'
+      @pa.content[4].should eq %q(Mr Green said he supported the force's approach and would prefer to see offenders educated rather than punished.)
+      @pa.content.last.should eq "Follow BBC South East on Facebook, on Twitter, and on Instagram. Send your story ideas to southeasttoday@bbc.co.uk."
+      @pa.content.size.should eq 7
+    end
+
+    it "should not include the published date" do
+      @pa.content.to_s.should_not =~ /Published/
+      @pa.content.to_s.should_not =~ /3 days ago/
+    end
+  end
+
+  describe "Covid sage article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/health-54528983',
+        page: File.read("spec/fixtures/bbc_news/54528983.html"),
+        valid_hash: '198cf66c8f6cc881b235c1e25201f7bb'
+      }
+      @pa = BbcNewsPageParserV7.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Covid Sage documents: The scientific evidence and what No 10 then did"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq "New measures announced by Boris Johnson this week fell short of advice provided by scientists"
+      @pa.content[1].should eq "Documents have revealed the UK government did not follow the advice given to it by scientists as coronavirus cases began to surge."
+      @pa.content[5].should eq "What scientists recommended: They did not go as far as recommending a full lockdown on the scale of the one in the spring. This was also an outcome Prime Minister Boris Johnson has been extremely keen to avoid."
+      @pa.content[12].should eq "Going to work"
+      @pa.content.last.should eq "TESTING: How do I get a virus test?"
+      @pa.content.size.should eq 34
+    end
+
+    it "should parse the headers" do
+      @pa.content[4].should eq "Full lockdown"
+    end
+
+    it "should parse the date" do
+      @pa.date.should eq DateTime.parse("October 13 23:44:11 +0000 2020")
+    end
+
+    it "should calculate the right hash" do
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+  end
+
+end
+
 describe BbcNewsPageParserV6 do
 
     describe "Dorset man article" do

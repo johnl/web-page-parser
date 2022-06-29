@@ -15,7 +15,7 @@ module WebPageParser
       end
 
       def self.create(options = {})
-        BbcNewsPageParserV6.new(options)
+        BbcNewsPageParserV7.new(options)
       end
     end
 
@@ -240,4 +240,51 @@ module WebPageParser
         @date = DateTime.parse(html_doc.xpath("//article//time[@datetime]/@datetime").first) rescue nil
       end
     end
+
+    class BbcNewsPageParserV7 < WebPageParser::BaseParser
+      require 'nokogiri'
+
+      def html_doc
+        @html_document ||= Nokogiri::HTML(page)
+      end
+
+      def title
+        return @title if @title
+        @title = html_doc.css('h1#main-heading').text.strip
+        @title = html_doc.xpath("//meta[@property='og:title']/@content").to_s.strip if @title.empty?
+        @title
+      end
+
+      def content
+        return @content if @content
+        @content = []
+        article = html_doc.xpath("//article").first
+        return [] unless article
+        remove_xpaths = %w{
+          //aside
+          //header
+          //nav
+          //section
+          //comment()
+          //style
+          //script
+          //noscript
+          //div[@data-component='include-block']
+          //figcaption//span
+          //div[contains(@class,'FooterContainer')]
+          //div[contains(@class,'MediaPlayerWrapper')]
+          }
+        article.xpath(remove_xpaths.join(' | ')).each { |n| n.remove }
+        article.xpath(".//p | .//li | .//figcaption | .//h2 | .//h3").each do |n|
+          @content << n.text.strip
+        end
+        @content
+      end
+
+      def date
+        return @date if @date
+        @date = DateTime.parse(html_doc.xpath("//article//time[@datetime]/@datetime").first) rescue nil
+      end
+    end
+
 end
