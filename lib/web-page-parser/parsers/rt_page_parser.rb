@@ -9,7 +9,7 @@ module WebPageParser
     end
 
     def self.create(options = {})
-      RTPageParserV1.new(options)
+      RTPageParserV2.new(options)
     end
   end
 
@@ -37,13 +37,30 @@ module WebPageParser
     end
 
     def date
-      @date ||= DateTime.parse(html_doc.at_css('div.article time.date:first').text.strip)
-    end
-
-    def filter_url(url)
-      # some wierd guardian problem with some older articles
-      url.to_s.gsub("www.guprod.gnl", "www.guardian.co.uk") 
+      return @date if @date
+      if (span_date = html_doc.at_css('span.date_article-header'))
+        @date = DateTime.parse(span_date.text) rescue nil
+      elsif (date_meta = html_doc.at_css('meta[name=published_time_telegram]'))
+        @date = DateTime.parse(date_meta['content']) rescue nil
+      elsif (div_date = html_doc.at_css('div.article time.date:first'))
+        @date = DateTime.parse(div_date.text.strip)
+      end
+      @date
     end
   end
 
+  # RTPageParserV2 parses RT web pages using html parsing.
+  class RTPageParserV2 < RTPageParserV1
+    def content
+      return @content if @content
+      article_summary = html_doc.css('div.article__summary')
+      @content = []
+      @content << article_summary.text.strip if article_summary
+      article_text = html_doc.css('div.article__text')
+      article_text.xpath('.//p | .//h2 | .//h3').each do |n|
+        @content << n.text.strip
+      end
+      @content
+    end
+  end
 end
