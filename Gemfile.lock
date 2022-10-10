@@ -1,23 +1,26 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    curb (0.9.10)
-    diff-lcs (1.1.3)
+    curb (0.9.11)
+    diff-lcs (1.5.0)
     htmlentities (4.3.4)
-    irb (1.0.0)
     mini_portile2 (2.4.0)
     nokogiri (1.9.1)
       mini_portile2 (~> 2.4.0)
+    psych (4.0.6)
+      stringio
     rake (10.5.0)
-    rdoc (6.0.4)
-    rspec (2.11.0)
-      rspec-core (~> 2.11.0)
-      rspec-expectations (~> 2.11.0)
-      rspec-mocks (~> 2.11.0)
-    rspec-core (2.11.1)
-    rspec-expectations (2.11.3)
-      diff-lcs (~> 1.1.3)
-    rspec-mocks (2.11.3)
+    rdoc (6.4.0)
+      psych (>= 4.0.0)
+    rspec (2.14.1)
+      rspec-core (~> 2.14.0)
+      rspec-expectations (~> 2.14.0)
+      rspec-mocks (~> 2.14.0)
+    rspec-core (2.14.8)
+    rspec-expectations (2.14.5)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.14.6)
+    stringio (3.0.2)
 
 PLATFORMS
   ruby
@@ -25,11 +28,10 @@ PLATFORMS
 DEPENDENCIES
   curb (~> 0.9.10)
   htmlentities (>= 4.3.1)
-  irb
   nokogiri (~> 1.9.1)
   rake (< 11.0)
   rdoc
-  rspec (~> 2.11.0)
+  rspec (~> 2.14.0)
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
