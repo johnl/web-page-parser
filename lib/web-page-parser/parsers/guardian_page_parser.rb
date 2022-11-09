@@ -116,7 +116,7 @@ module WebPageParser
     def content
       return @content if @content
 
-      story_body = html_doc.css('article div[itemprop=articleBody] > *').select do |e|
+      story_body = html_doc.css('article div[itemprop=articleBody] > *, article div[data-gu-name=standfirst] * > p, div#maincontent *').select do |e|
         e.name == 'p' || e.name == 'h2' || e.name == 'h3' || e.name == 'ul'
       end
       story_body = story_body.collect do |p|
@@ -139,6 +139,8 @@ module WebPageParser
 
       if (date_meta = html_doc.at_css('time[itemprop="datePublished"]'))
         @date = parse_datetime_or_nil date_meta['datetime']
+      elsif (date_meta = html_doc.at_css('meta[property="article:published_time"]'))
+        @date = parse_datetime_or_nil date_meta['content']
       end
       @date
     end

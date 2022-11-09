@@ -393,4 +393,65 @@ describe GuardianPageParserV4 do
       @pa.content.to_s.should_not =~ /Facebook/m
     end
   end
+
+  describe "boris johnson apologises article with new formatting" do
+    before do
+      @valid_options = {
+        url: 'https://www.theguardian.com/politics/2019/nov/03/boris-johnson-apologises-tory-members-not-leaving-eu-october',
+        page: File.read("spec/fixtures/guardian/boris-johnson-apologises-2022.html"),
+        valid_hash: '0469daffeadb2c9c6f261db7bbef34a6'
+      }
+      @pa = GuardianPageParserV4.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Brexit: Boris Johnson apologises to Tory members for deadline extension"
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should eq DateTime.parse("Sun 3 Nov 2019 15:41:45 GMT")
+      @pa.date.zone.should eq '+00:00'
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq "PM says failure to leave EU on 31 October is matter of ‘deep regret’ and blames parliament"
+      @pa.content.last.should eq "She told the paper: “I was very pleased to receive the whip back and I wanted to continue in parliament. It was only after a period of reflection that I realised that I needed to bring the three-and-a-half-year conflict between the result of the referendum in my constituency and my own view of where the future interests of the country lie to a close.”"
+      @pa.content.size.should eq 17
+      @pa.hash.should eq @valid_options[:valid_hash]
+    end
+
+    it "should not include the social buttons in the content" do
+      @pa.content.to_s.should_not =~ /Twitter/m
+      @pa.content.to_s.should_not =~ /Facebook/m
+    end
+  end
+
+
+  describe "cop27 article" do
+    before do
+      @valid_options = {
+        url: 'https://www.theguardian.com/environment/2022/nov/09/cop27-egypt-climate-disaster-funds',
+        page: File.read("spec/fixtures/guardian/cop27-egypt-climate-disaster-funds.html"),
+        valid_hash: '074e3a1f4827987927ffda29a0762257'
+      }
+      @pa = GuardianPageParserV4.new(@valid_options)
+    end
+
+    it "should parse the date in UTC" do
+      @pa.date.should eq DateTime.parse("2022-11-09T11:18:56+00:00")
+      @pa.date.zone.should eq '+00:00'
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "‘Significant’ moves on climate disaster funds lift Cop27 hopes"
+    end
+
+    it "should parse the content" do
+      @pa.content[0].should eq "Small but symbolic moves at summit where finance is critical include new loss and damage money and debt relief"
+      @pa.content[1].should eq "A series of symbolic moves on climate finance at Cop27 suggests positive momentum could be starting to build on a pivotal issue at the UN summit in Egypt."
+      @pa.content.last.should eq "Analysis by campaigners at Global Justice Now published on Wednesday suggested that five big oil companies – Chevron, ExxonMobil, BP, Shell and Total – should be paying $65bn a year based on their contribution of 11% of global carbon emissions to date. Recent research showed that the oil and gas industry has delivered an average of $1tn a year in pure profit for the last 50 years."
+      @pa.content.size.should == 15
+      @pa.hash.should == @valid_options[:valid_hash]
+    end
+  end
 end
