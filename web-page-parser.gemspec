@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = 'web-page-parser'
-  s.version = '1.3.0'
-  s.date    = '2019-11-03'
+  s.version = '1.3.1'
+  s.date    = '2022-12-20'
   s.licenses = ['MIT']
 
   s.summary = "A parser for various news organisation's web pages"
@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1.0'
 
   s.add_dependency("htmlentities", "~> 4.3")
-  s.add_dependency("curb", "~> 0.9.10")
-  s.add_dependency("nokogiri", "~> 1.9.1")
-  s.add_development_dependency("rspec", "~> 2.11")
+  s.add_dependency("curb", ">= 0.9.10")
+  s.add_dependency("nokogiri", ">= 1.9.1")
+  s.add_development_dependency("rspec", "~> 2.14")
   s.add_development_dependency("rake")
 end

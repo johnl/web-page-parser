@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
 gem "htmlentities", ">= 4.3.1"
-gem "curb", "~> 0.9.10"
-gem "nokogiri", "~> 1.9.1"
+gem "curb", ">= 0.9.0"
+gem "nokogiri", ">= 1.10.0"
 
 platforms :ruby_18 do
   # Needs libonig-dev debian/ubuntu package
@@ -12,5 +12,5 @@ end
 group :development do
   gem 'rdoc'
   gem "rspec", '~>2.14.0'
-  gem "rake", "< 11.0"
+  gem "rake"
 end
