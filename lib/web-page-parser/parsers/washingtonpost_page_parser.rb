@@ -73,7 +73,7 @@ module WebPageParser
     end
 
     def title
-      @title ||= html_doc.css('h1[itemprop="headline"]').text.strip
+      @title ||= html_doc.css('h1[itemprop="headline"], header h1#main-content').text.strip
     end
 
     def content
@@ -113,13 +113,17 @@ module WebPageParser
 
     def content
       return @content if @content
-      story_body = html_doc.css('article:first > div.article-body p').collect { |p| p.text.strip }
+      story_body = html_doc.css('article:first div.article-body p').collect { |p| p.text.strip }
       @content = story_body.select { |p| !p.empty? }
     end
 
     def date
       return @date if @date
-      @date = DateTime.parse(html_doc.css('div.display-date').text).new_offset(0) rescue nil
+      if date_meta = html_doc.at_css('meta[property="article:published_time"]')
+        @date = DateTime.parse(date_meta['content']) rescue nil
+      end
+      @date ||= DateTime.parse(html_doc.css('div.display-date').text).new_offset(0) rescue nil
+      @date
     end
 
   end
