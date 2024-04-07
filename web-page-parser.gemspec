@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   s.add_dependency("curb", ">= 0.9.10")
   s.add_dependency("nokogiri", ">= 1.9.1")
   s.add_development_dependency("rspec", "~> 2.14")
-  s.add_development_dependency("rake")
+  s.add_development_dependency("rake", "< 11")
 end
