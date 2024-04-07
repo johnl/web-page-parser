@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = 'web-page-parser'
-  s.version = '1.3.1'
-  s.date    = '2022-12-20'
+  s.version = '1.3.2'
+  s.date    = '2024-04-07'
   s.licenses = ['MIT']
 
   s.summary = "A parser for various news organisation's web pages"
