@@ -2,7 +2,7 @@
 module WebPageParser
 
     class BbcNewsPageParserFactory < WebPageParser::ParserFactory
-      URL_RE = ORegexp.new("(www|news)\.bbc\.co\.uk/.+/([a-z-]+-)?[0-9-]+(\.stm)?$")
+      URL_RE = ORegexp.new("(www|news)\.bbc\.(co\.uk|com)/(.+/([a-z0-9-]+-)?[0-9-]+(\.stm)?)?(news/[^/]+\/[a-z0-9]+)?$")
       INVALID_URL_RE = ORegexp.new("in_pictures|pop_ups|sport1")
 
       def self.can_parse?(options)
