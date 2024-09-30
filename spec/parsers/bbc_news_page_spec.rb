@@ -57,7 +57,40 @@ end
 
 describe BbcNewsPageParserV7 do
 
-    describe "Dorset man article" do
+  describe "Mexico counting dead article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/articles/cden3j9d1r7o',
+        page: File.read("spec/fixtures/bbc_news/cden3j9d1r7o.html"),
+        valid_hash: 'dc48936e9b6fb25ceec425941a14e440'
+      }
+      @pa = BbcNewsPageParserV7.new(@valid_options)
+    end
+
+    it "should not include the published date" do
+      @pa.content.to_s.should_not =~ /Published/
+      @pa.content.to_s.should_not =~ /2 hours ago/
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Mexico counting dead from 'zombie storm' John"
+    end
+
+    it "should parse the first line, which is an image caption" do
+      @pa.content[0].should eq "Many families had to seek safety in shelters after their homes were flooded"
+    end
+
+    it "should parse the first line of the article body" do
+      @pa.content[1].should eq "At least 15 people have died in Mexico as a result of Hurricane John, the country's President Andrés Manuel López Obrador has confirmed."
+    end
+
+    it "should parse the lastline of the article body" do
+      @pa.content[16].should eq %(Claudia Sheinbaum, who is due to be sworn in as Mexico's new president on Tuesday, said she would visit Guerrero state with her ministers on Wednesday to ensure that those affected received "all the necessary assistance".)
+    end
+
+  end
+
+  describe "Dorset man article" do
     before do
       @valid_options = {
         url: 'https://www.bbc.co.uk/news/av/uk-england-dorset-61896381',

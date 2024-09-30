@@ -270,13 +270,18 @@ module WebPageParser
           //script
           //noscript
           //div[@data-component='include-block']
+          //div[@data-component='metadata-block']
+          //div[@data-component='topic-list']
+          //div[@data-component='links-block']
           //figcaption//span
           //div[contains(@class,'FooterContainer')]
           //div[contains(@class,'MediaPlayerWrapper')]
           }
         article.xpath(remove_xpaths.join(' | ')).each { |n| n.remove }
         article.xpath(".//p | .//li | .//figcaption | .//h2 | .//h3").each do |n|
-          @content << n.text.strip
+          t = n.text.strip
+          # ditch duplicate lines, such as those coming from figcaption sometimes having a nested p
+          @content << t unless @content.last == t
         end
         @content
       end
