@@ -276,10 +276,12 @@ module WebPageParser
           //figcaption//span
           //div[contains(@class,'FooterContainer')]
           //div[contains(@class,'MediaPlayerWrapper')]
+          //div[contains(@class,'UgcUploaderContent')]
           }
         article.xpath(remove_xpaths.join(' | ')).each { |n| n.remove }
         article.xpath(".//p | .//li | .//figcaption | .//h2 | .//h3").each do |n|
           t = n.text.strip
+          t.gsub!(/Published[0-9 ]+ (minutes|hours|days|months|years) ago$/,"")
           # ditch duplicate lines, such as those coming from figcaption sometimes having a nested p
           @content << t unless @content.last == t
         end

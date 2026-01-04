@@ -55,7 +55,43 @@ describe BbcNewsPageParserFactory do
   end
 end
 
+
 describe BbcNewsPageParserV7 do
+  describe "Electricity prices article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/articles/cdd29v8mp9jo',
+        page: File.read("spec/fixtures/bbc_news/electricity-prices.html"),
+        valid_hash: ''
+      }
+      @pa = BbcNewsPageParserV7.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "What is happening to gas and electricity prices?"
+    end
+
+    it "should exclude 'Published x days/hours ago' text which changes often" do
+      @pa.content.to_s.should_not =~ /Published[0-9 ]+ (days|hours|weeks|months) ago/
+    end
+
+    it "should exclude the 'Get in Touch' box" do
+      @pa.content.to_s.should_not =~ /Get in touch/
+    end
+
+    it "should parse the first line" do
+      @pa.content[0].should eq "Typical household energy costs will increase slightly on Thursday when the new energy price cap takes effect."
+    end
+
+    it "should ignore related topics section" do
+      @pa.content.to_s.should_not =~ /Related topics/
+    end
+
+    it "should parse the last two lines of the article body" do
+      @pa.content[-2].should eq %(About nine million pensioners will also get the Winter Fuel Payment in 2025/2026, worth £200 or £300, after a government U-turn over eligibility.)
+      @pa.content.last.should eq %(Ofgem: Help with bills, external)
+    end
+  end
 
   describe "Mexico counting dead article" do
     before do
