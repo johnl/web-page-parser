@@ -273,6 +273,10 @@ module WebPageParser
           //div[@data-component='metadata-block']
           //div[@data-component='topic-list']
           //div[@data-component='links-block']
+          //div[@data-block='links']
+          //div[@data-block='metadata']
+          //div[@data-block='topicList']
+          //div[@data-block='promoList']
           //figcaption//span
           //div[contains(@class,'FooterContainer')]
           //div[contains(@class,'MediaPlayerWrapper')]

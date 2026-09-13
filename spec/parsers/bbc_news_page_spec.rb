@@ -57,6 +57,26 @@ end
 
 
 describe BbcNewsPageParserV7 do
+
+  describe "Reform crypto investor article" do
+    before do
+      @valid_options = {
+        url: 'https://www.bbc.co.uk/news/articles/clye9nldd7do',
+        page: File.read("spec/fixtures/bbc_news/reform-crypto-investor.html"),
+        valid_hash: ''
+      }
+      @pa = BbcNewsPageParserV7.new(@valid_options)
+    end
+
+    it "should parse the title" do
+      @pa.title.should eq "Reform receives second £36m donation in two days as crypto investor matches record"
+    end
+
+    it "should parse the content" do
+      @pa.content.to_s.should_not =~ /Who is Reform donor and crypto billionaire Ben Delo/
+    end
+  end
+
   describe "Electricity prices article" do
     before do
       @valid_options = {
